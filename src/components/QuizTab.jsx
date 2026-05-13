@@ -7,8 +7,8 @@ const DIFF_CONFIG = {
   3: { label: 'Hard',   color: 'var(--coral)', bg: 'rgba(255,107,107,0.12)' },
 }
 
-export default function QuizTab({ config, learnedTopics, onAnswer }) {
-  const [topic, setTopic]       = useState('')
+export default function QuizTab({ config, roadmap, learnedTopics, onAnswer }) {
+  const [topic, setTopic]       = useState(learnedTopics[learnedTopics.length - 1] || roadmap?.nodes[0]?.label || '')
   const [question, setQuestion] = useState(null)
   const [difficulty, setDiff]   = useState(1)
   const [selected, setSelected] = useState(null)
@@ -22,6 +22,7 @@ export default function QuizTab({ config, learnedTopics, onAnswer }) {
   const effectiveTopic = topic.trim() || config.subject
 
   async function fetchQuestion(diff = difficulty) {
+    if (!effectiveTopic) return setError('Please select a topic first.')
     setLoading(true)
     setError('')
     setQuestion(null)
@@ -76,12 +77,18 @@ export default function QuizTab({ config, learnedTopics, onAnswer }) {
     <div style={s.wrap}>
       {/* Topic selector */}
       <div style={s.topBar}>
-        <input
+        <select
           style={s.topicInput}
-          placeholder={`Topic (default: ${config.subject})`}
           value={topic}
           onChange={e => setTopic(e.target.value)}
-        />
+        >
+          <option value="" disabled>Select a topic from your roadmap</option>
+          {roadmap?.nodes.map(node => (
+            <option key={node.id} value={node.label}>
+              {node.label} {learnedTopics.includes(node.label) ? '✓' : ''}
+            </option>
+          ))}
+        </select>
         <button
           style={{ ...s.startBtn, opacity: loading ? 0.6 : 1 }}
           onClick={() => fetchQuestion()}

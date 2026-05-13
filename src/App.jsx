@@ -5,6 +5,7 @@ import QuizTab from './components/QuizTab'
 import HeatmapTab from './components/HeatmapTab'
 import TranslateTab from './components/TranslateTab'
 import InsightsTab from './components/InsightsTab'
+import { generateRoadmap } from './gemini'
 
 const TABS = [
   { id: 'learn',     label: '🧠 Learn',     desc: 'Adaptive explanations' },
@@ -16,12 +17,29 @@ const TABS = [
 
 export default function App() {
   const [config, setConfig]           = useState(null)
+  const [roadmap, setRoadmap]         = useState(null)
+  const [isGenerating, setIsGen]      = useState(false)
   const [activeTab, setActiveTab]     = useState('learn')
   const [learnedTopics, setLearned]   = useState([])
   const [quizHistory, setQuizHistory] = useState([])
+  const [genError, setGenError]       = useState('')
+  const [isSimplifierOpen, setIsSimp] = useState(false)
 
-  function handleStart(cfg) {
-    setConfig(cfg)
+  async function handleStart(cfg) {
+    setIsGen(true)
+    setGenError('')
+    try {
+      const rm = await generateRoadmap({
+        apiKey: cfg.apiKey,
+        context: cfg.subject,
+        language: cfg.language
+      })
+      setRoadmap(rm)
+      setConfig(cfg)
+    } catch (e) {
+      setGenError(e.message || 'Failed to generate roadmap. Please check your API key and try again.')
+    }
+    setIsGen(false)
   }
 
   function handleTopicLearned(topic) {
@@ -34,7 +52,17 @@ export default function App() {
     setLearned(prev => prev.includes(topic) ? prev : [...prev, topic])
   }
 
-  if (!config) return <SetupScreen onStart={handleStart} />
+  if (isGenerating) {
+    return (
+      <div style={styles.loadingWrap}>
+        <div style={styles.spinnerLg} />
+        <h2 style={{ marginTop: '1.5rem', fontSize: 20 }}>Creating your personalized roadmap...</h2>
+        <p style={{ color: 'var(--text2)', marginTop: 8 }}>VidyaAI is analyzing your syllabus</p>
+      </div>
+    )
+  }
+
+  if (!config) return <SetupScreen onStart={handleStart} errorOverride={genError} />
 
   return (
     <div style={styles.app}>
@@ -52,12 +80,12 @@ export default function App() {
             👤 {config.name}
           </span>
           <span style={styles.navChip}>
-            📚 {config.subject}
+            📚 {config.subject.length > 20 ? config.subject.substring(0, 20) + '...' : config.subject}
           </span>
           <span style={{ ...styles.navChip, color: 'var(--teal)', borderColor: 'rgba(45,212,160,0.3)' }}>
             🌐 {config.language}
           </span>
-          <button style={styles.resetBtn} onClick={() => { setConfig(null); setLearned([]); setQuizHistory([]) }}>
+          <button style={styles.resetBtn} onClick={() => { setConfig(null); setRoadmap(null); setLearned([]); setQuizHistory([]) }}>
             ← Exit
           </button>
         </div>
@@ -83,12 +111,15 @@ export default function App() {
           {activeTab === 'learn' && (
             <LearnTab
               config={config}
+              roadmap={roadmap}
+              quizHistory={quizHistory}
               onTopicLearned={handleTopicLearned}
             />
           )}
           {activeTab === 'quiz' && (
             <QuizTab
               config={config}
+              roadmap={roadmap}
               learnedTopics={learnedTopics}
               onAnswer={handleQuizAnswer}
             />
@@ -111,12 +142,49 @@ export default function App() {
           )}
         </div>
       </main>
+
+      {/* Floating Simplifier Button */}
+      {config && (
+        <button 
+          style={styles.floatingBtn} 
+          onClick={() => setIsSimp(!isSimplifierOpen)}
+          title="Quick Translation & Simplification"
+        >
+          <span style={{ fontSize: 20 }}>🌐</span>
+          <span style={styles.floatingBtnText}>Simplify</span>
+        </button>
+      )}
+
+      {/* Simplifier Modal */}
+      {isSimplifierOpen && (
+        <div style={styles.modalOverlay} onClick={() => setIsSimp(false)}>
+          <div style={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div style={styles.modalHeader}>
+              <h3 style={{ fontSize: 16 }}>Quick Simplify</h3>
+              <button style={styles.closeBtn} onClick={() => setIsSimp(false)}>✕</button>
+            </div>
+            <div style={{ padding: '1.5rem', maxHeight: '80vh', overflow: 'auto' }}>
+              <TranslateTab config={config} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 const styles = {
   app: { display: 'flex', flexDirection: 'column', minHeight: '100vh' },
+  loadingWrap: {
+    height: '100vh', display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center', background: 'var(--bg)',
+    textAlign: 'center', padding: '2rem',
+  },
+  spinnerLg: {
+    width: 48, height: 48, border: '4px solid var(--border)',
+    borderTopColor: 'var(--purple)', borderRadius: '50%',
+    animation: 'spin 1s linear infinite',
+  },
   nav: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     padding: '0.875rem 2rem', background: 'var(--bg)',
@@ -162,4 +230,33 @@ const styles = {
   tabUnderline: {},
   main: { flex: 1, overflow: 'auto' },
   content: { maxWidth: 900, margin: '0 auto', padding: '2rem' },
+  floatingBtn: {
+    position: 'fixed', bottom: 32, right: 32,
+    background: 'var(--purple)', color: '#fff', border: 'none',
+    borderRadius: 50, padding: '12px 24px',
+    display: 'flex', alignItems: 'center', gap: 10,
+    boxShadow: '0 8px 32px rgba(124,110,247,0.3)',
+    cursor: 'pointer', zIndex: 1000,
+    transition: 'transform 0.2s',
+  },
+  floatingBtnText: { fontSize: 14, fontWeight: 600 },
+  modalOverlay: {
+    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 2000, padding: '1rem',
+  },
+  modalContent: {
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-xl)', width: '100%', maxWidth: 800,
+    boxShadow: '0 20px 60px rgba(0,0,0,0.5)', overflow: 'hidden',
+  },
+  modalHeader: {
+    padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    background: 'var(--bg2)',
+  },
+  closeBtn: {
+    background: 'transparent', border: 'none', color: 'var(--text3)',
+    fontSize: 18, cursor: 'pointer',
+  },
 }

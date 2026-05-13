@@ -25,14 +25,17 @@
 
 ---
 
-## 2. Solution Overview
+## 2. Solution Overview (The "Guided Journey" Flow)
 
-VidyaAI is a browser-based AI tutoring platform that:
-1. Explains any topic adaptively — adjusting to the student's learning style and difficulty level
-2. Quizzes students with auto-scaling difficulty (easy → hard as they improve)
-3. Shows a visual knowledge gap heatmap so students know what to focus on
-4. Translates and simplifies any educational text into Telugu, Hindi, or Tamil
-5. Generates personalized learning insights powered by Gemini AI
+VidyaAI is a browser-based AI tutoring platform that outclasses traditional tools by replacing intimidating, open-ended interfaces with a structured, grounded, and localized learning journey:
+
+1.  **Context-Aware Roadmap:** Instead of a blank search bar, students provide their context (syllabus, textbook chapter, or exam name). VidyaAI instantly generates a **Visual Learning Roadmap** that breaks the subject into manageable nodes.
+2.  **Native Bite-Sized Overview:** Generates a brief, encouraging overview of the roadmap in the student's mother tongue (Telugu/Hindi/Tamil) to build confidence before studying.
+3.  **Adaptive Core Loop (Learn → Quiz → Map):**
+    *   **Learn:** Students click a roadmap node to receive a grounded explanation adapted to their specific style and level.
+    *   **Quiz:** An immediate, adaptive MCQ tests comprehension of that specific node.
+    *   **Map:** Successful completion turns the roadmap node **Green (Strong)**, while failure turns it **Amber (Review)** or **Red (Weak)**, providing a clear visual sense of progress and gamification.
+4.  **Ubiquitous Simplification:** A floating "Help" tool allows students to highlight any complex English text throughout the journey and receive an instant, simplified explanation in their native language.
 
 ---
 
@@ -71,24 +74,25 @@ VidyaAI is a browser-based AI tutoring platform that:
 
 ## 5. Feature Specifications
 
-### F1 — Adaptive Explanation Engine (LearnTab)
+### F1 — Visual Learning Roadmap & Explanation Engine (LearnTab)
 
 **What it does:**
-- Student enters any topic (e.g., "Photosynthesis", "Linked Lists", "Newton's Laws")
+- **Roadmap Generation:** Student uploads context (syllabus, chapter text, or exam name). Gemini parses the source and generates an interactive, node-based **Learning Roadmap**.
+- **Adaptive Explanation:** Student clicks a roadmap node to get a grounded explanation.
 - Selects learning style: Examples / Story / Steps / Simple / Visual
 - Selects difficulty: Beginner / Intermediate / Advanced
-- Gemini generates a 3–4 paragraph explanation in chosen language
+- Gemini generates a 3–4 paragraph explanation in chosen language using the grounded source material.
 
 **Inputs:**
-- Topic (text input)
+- Learning Context (PDF, Text, or Subject Name)
 - Learning style (5 options)
 - Difficulty (3 levels)
 - Language (set at onboarding)
 
 **Output:**
-- Structured explanation in chosen language
+- Interactive Visual Roadmap
+- Structured node-specific explanation in chosen language
 - Ends with "💡 Key insight:" line
-- Suggested topics for the subject (8 chips auto-loaded)
 
 **Gemini prompt strategy:**
 - System: respond only in target language
@@ -136,16 +140,18 @@ streak resets on wrong answer
 
 ---
 
-### F3 — Knowledge Gap Heatmap (HeatmapTab)
+### F3 — Roadmap Integration & Knowledge Heatmap (HeatmapTab)
 
 **What it does:**
-- Aggregates all topics the student has learned + quizzed
-- Calculates accuracy per topic from quiz history
-- Classifies topics into: Strong (≥75%) / Medium (45–74%) / Weak (<45%) / Not quizzed
-- Renders a color-coded grid + radar chart
+- Aggregates all topics the student has learned + quizzed and displays them as nodes on the Visual Roadmap.
+- **Node Gamification:** 
+  - Accuracy ≥75% → **Green (Strong)**
+  - Accuracy 45–74% → **Amber (Review)**
+  - Accuracy <45% → **Red (Weak)**
+- Renders a color-coded grid + radar chart to show the overall "knowledge shape."
 
 **Data source:**
-- `learnedTopics[]` — updated when student clicks Explain
+- `roadmapNodes[]` — generated at start
 - `quizHistory[]` — updated on every quiz answer
 
 **Recharts usage:**
@@ -160,13 +166,13 @@ streak resets on wrong answer
 
 ---
 
-### F4 — Translate & Simplify (TranslateTab)
+### F4 — Ubiquitous Translate & Simplify (Floating Tool)
 
 **What it does:**
-- Student pastes any English educational text
-- Selects target language: Telugu / Hindi / Tamil / English
-- Gemini translates AND simplifies for rural comprehension
-- Not word-for-word — natural, simplified translation
+- **Not a siloed tab, but a floating help tool accessible throughout the app.**
+- Student can highlight any difficult English text within the app or paste external text.
+- Gemini translates AND simplifies for rural comprehension.
+- Not word-for-word — natural, simplified translation designed for first-generation learners.
 
 **Sample texts pre-loaded:**
 - Photosynthesis definition
@@ -270,15 +276,16 @@ gemini.js
 
 ```
 [0:00] Open app → enter name "Ravi", subject "Physics", language "Telugu"
-[0:30] Learn tab → type "Photosynthesis" → style: Simple → Explain
-       → Show Telugu explanation appearing
-[1:30] Quiz tab → topic "Photosynthesis" → Start Quiz
-       → Answer 2 correct → show difficulty going from Easy → Medium
-       → Answer 1 wrong → show explanation in Telugu
-[3:00] Heatmap tab → show knowledge radar + topic grid with colors
-[3:45] Translate tab → paste Newton's Law → translate to Telugu → show simplification
-[4:30] Insights tab → Generate insight → show AI feedback in Telugu
-[5:00] Close: "Any student, any topic, any language."
+[0:30] Source Injection → Paste Physics Syllabus/Chapter → "Generate Roadmap"
+       → Show Visual Roadmap appearing with nodes (Mechanics, Optics, etc.)
+[1:15] Native Overview → Show AI giving a quick Telugu overview of the journey.
+[1:45] Learn Tab → Click "Mechanics" node → Style: Simple → Explain
+       → Show Telugu explanation grounded in the uploaded syllabus.
+[3:00] Quiz Tab → immediate adaptive MCQ for "Mechanics"
+       → Pass quiz → show "Mechanics" node on Roadmap turning Green.
+[3:45] Floating Simplifier → Highlight complex English term → instant Telugu tooltip.
+[4:30] Heatmap/Insights → Generate insight → show AI feedback in Telugu
+[5:00] Close: "Outclassing the open-ended AI with a guided, native-language journey."
 ```
 
 ---
@@ -293,7 +300,21 @@ gemini.js
 
 ---
 
-## 12. Success Metrics (Post-hackathon)
+---
+
+## 13. Free Tier Optimization Strategy
+
+Since the project relies on the **Gemini 1.5 Flash Free Tier** (15 RPM / 1,500 RPD), the following engineering choices are mandatory to ensure stability during the hackathon:
+
+1.  **Prompt Batching:** Instead of separate calls for Roadmap Generation and the Native Overview, we combine them into a single request. One call returns both the nodes and the Telugu/Hindi summary.
+2.  **JSON-Only Responses:** All structural data (Roadmaps, Quizzes) will be requested as strict JSON. This minimizes "token noise" (conversational filler) and makes processing faster and cheaper.
+3.  **Client-Side Intelligence:** The "Map" (Heatmap) and "Insights" calculations (like learning profile) are calculated locally in the browser based on quiz scores. We only call Gemini for the *nuanced text* part of the insight, not the raw data processing.
+4.  **Caching:** During a single session, if a student regenerates an explanation for the same topic with the same settings, we will attempt to cache the previous response locally.
+5.  **Graceful Degeneracy:** If a 429 (Rate Limit) error occurs, the app will show a helpful "AI is thinking, please wait 30s" message instead of crashing, preserving the user experience.
+
+---
+
+## 14. Success Metrics (Post-hackathon)
 
 - 100 students onboarded in first week
 - ≥3 topics explored per session on average

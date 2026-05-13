@@ -41,6 +41,38 @@ async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAUL
   }
 }
 
+// FEATURE 0: Generate Roadmap from context
+export async function generateRoadmap({ apiKey, context, language }) {
+  const langMap = {
+    english: 'English',
+    telugu: 'Telugu',
+    hindi: 'Hindi',
+    tamil: 'Tamil',
+  }
+
+  const prompt = `You are an expert AI tutor. A student has provided the following learning context (it might be a syllabus, a textbook chapter, or just a subject name):
+
+"${context}"
+
+Create a highly structured visual learning roadmap for them.
+Return ONLY valid JSON in this exact format, nothing else:
+{
+  "overview": "A brief, encouraging 2-sentence overview of what they will learn, written in ${langMap[language] || 'English'}.",
+  "nodes": [
+    {
+      "id": "node-1",
+      "label": "Short Topic Name in English",
+      "description": "Brief 1-sentence description in English"
+    }
+  ]
+}
+Ensure there are between 5 to 8 sequential nodes that logically cover the context.`
+
+  const raw = await callGemini(apiKey, prompt)
+  const cleaned = raw.replace(/```json|```/g, '').trim()
+  return JSON.parse(cleaned)
+}
+
 // FEATURE 1: Adaptive explanation - adjusts style + language
 export async function explainTopic({ apiKey, topic, language, style, difficulty }) {
   const langMap = {

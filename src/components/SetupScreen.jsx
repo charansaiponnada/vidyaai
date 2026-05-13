@@ -7,12 +7,14 @@ const LANGUAGES = [
   { code: 'tamil',   label: 'Tamil',   native: 'தமிழ்' },
 ]
 
-export default function SetupScreen({ onStart }) {
+export default function SetupScreen({ onStart, errorOverride }) {
   const [apiKey, setApiKey] = useState('')
   const [name, setName]     = useState('')
   const [subject, setSubject] = useState('')
   const [language, setLanguage] = useState('english')
   const [error, setError] = useState('')
+
+  const activeError = errorOverride || error
 
   function handleStart() {
     if (!apiKey.trim()) return setError('Please enter your Gemini API key.')
@@ -50,13 +52,14 @@ export default function SetupScreen({ onStart }) {
           />
         </Field>
 
-        <Field label="Subject to Learn">
-          <input
-            style={styles.input}
-            placeholder="e.g. Physics, Python, History, Maths..."
+        <Field label="Learning Context">
+          <textarea
+            style={{ ...styles.input, height: 100, resize: 'none' }}
+            placeholder="Paste your syllabus, a textbook chapter, or just a subject name (e.g. 10th Class Physics)..."
             value={subject}
             onChange={e => setSubject(e.target.value)}
           />
+          <p style={styles.hint}>VidyaAI will build a custom roadmap from this.</p>
         </Field>
 
         <Field label="Gemini API Key">
@@ -93,7 +96,7 @@ export default function SetupScreen({ onStart }) {
           </div>
         </Field>
 
-        {error && <p style={styles.error}>{error}</p>}
+        {activeError && <p style={styles.error}>{activeError}</p>}
 
         <button style={styles.startBtn} onClick={handleStart}>
           Start Learning →

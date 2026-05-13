@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { explainTopic, getSuggestedTopics } from '../gemini'
+import { useState, useMemo } from 'react'
+import { explainTopic } from '../gemini'
 
 const STYLES = [
   { code: 'examples', label: '📌 Examples', desc: 'Real-world analogies' },
@@ -15,26 +15,33 @@ const DIFFICULTIES = [
   { val: 3, label: 'Advanced',     color: 'var(--coral)' },
 ]
 
-export default function LearnTab({ config, onTopicLearned }) {
+export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned }) {
   const [topic, setTopic]         = useState('')
   const [style, setStyle]         = useState('examples')
   const [difficulty, setDiff]     = useState(1)
   const [content, setContent]     = useState('')
   const [loading, setLoading]     = useState(false)
   const [error, setError]         = useState('')
-  const [suggestions, setSugg]    = useState([])
-  const [suggLoading, setSuggLoad]= useState(false)
   const [currentTopic, setCurrent]= useState('')
 
-  async function loadSuggestions() {
-    if (suggestions.length) return
-    setSuggLoad(true)
-    try {
-      const s = await getSuggestedTopics({ apiKey: config.apiKey, subject: config.subject })
-      setSugg(s)
-    } catch { setSugg([]) }
-    setSuggLoad(false)
-  }
+  // Calculate node statuses from quiz history
+  const nodeStatuses = useMemo(() => {
+    const stats = {}
+    quizHistory?.forEach(h => {
+      if (!stats[h.topic]) stats[h.topic] = { correct: 0, total: 0 }
+      stats[h.topic].total++
+      if (h.correct) stats[h.topic].correct++
+    })
+    
+    const statuses = {}
+    Object.entries(stats).forEach(([t, s]) => {
+      const acc = (s.correct / s.total) * 100
+      if (acc >= 75) statuses[t] = 'strong'
+      else if (acc >= 45) statuses[t] = 'medium'
+      else statuses[t] = 'weak'
+    })
+    return statuses
+  }, [quizHistory])
 
   async function handleLearn(topicOverride) {
     const t = topicOverride || topic
@@ -61,43 +68,42 @@ export default function LearnTab({ config, onTopicLearned }) {
 
   return (
     <div style={s.wrap}>
-      {/* Search row */}
-      <div style={s.searchRow}>
-        <input
-          style={s.input}
-          placeholder={`Enter a topic in ${config.subject}...`}
-          value={topic}
-          onChange={e => setTopic(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleLearn()}
-          onFocus={loadSuggestions}
-        />
-        <button
-          style={{ ...s.goBtn, opacity: loading ? 0.6 : 1 }}
-          onClick={() => handleLearn()}
-          disabled={loading}
-        >
-          {loading ? <span className="spinner" style={{ width: 16, height: 16 }} /> : 'Explain →'}
-        </button>
-      </div>
-
-      {/* Suggested topics */}
-      {(suggestions.length > 0 || suggLoading) && !content && (
-        <div style={s.suggWrap}>
-          <p style={s.suggLabel}>Suggested topics for <strong style={{ color: 'var(--purple2)' }}>{config.subject}</strong></p>
-          <div style={s.suggGrid}>
-            {suggLoading
-              ? Array(8).fill(0).map((_, i) => <div key={i} className="skeleton" style={{ height: 34, borderRadius: 8 }} />)
-              : suggestions.map(s_ => (
-                  <button key={s_} style={s.suggChip} onClick={() => { setTopic(s_); handleLearn(s_) }}>
-                    {s_}
-                  </button>
-                ))
-            }
+      {/* Roadmap Section */}
+      {!content && (
+        <div className="fade-up">
+          <div style={s.roadmapHeader}>
+            <h2 style={s.roadmapTitle}>Your Learning Roadmap</h2>
+            <p style={s.roadmapOverview}>{roadmap?.overview}</p>
+          </div>
+          
+          <div style={s.roadmapGrid}>
+            {roadmap?.nodes.map((node, i) => {
+              const status = nodeStatuses[node.label]
+              const statusColor = status === 'strong' ? 'var(--teal)' : status === 'medium' ? 'var(--amber)' : status === 'weak' ? 'var(--coral)' : 'var(--border)'
+              return (
+                <button 
+                  key={node.id} 
+                  style={{ ...s.nodeCard, borderColor: status ? statusColor : 'var(--border)' }}
+                  onClick={() => { setTopic(node.label); handleLearn(node.label) }}
+                >
+                  <div style={s.nodeNum}>{i + 1}</div>
+                  <div style={s.nodeContent}>
+                    <div style={s.nodeLabel}>{node.label}</div>
+                    <div style={s.nodeDesc}>{node.description}</div>
+                  </div>
+                  {status && (
+                    <div style={{ ...s.statusBadge, background: statusColor }}>
+                      {status.toUpperCase()}
+                    </div>
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
 
-      {/* Controls */}
+      {/* Controls - only show when content is visible or to override */}
       <div style={s.controlsRow}>
         <div style={s.controlGroup}>
           <p style={s.ctrlLabel}>Learning style</p>
@@ -130,6 +136,11 @@ export default function LearnTab({ config, onTopicLearned }) {
             ))}
           </div>
         </div>
+        {content && (
+          <button style={s.backBtn} onClick={() => setContent('')}>
+            ← Back to Roadmap
+          </button>
+        )}
       </div>
 
       {/* Error */}
@@ -185,26 +196,32 @@ export default function LearnTab({ config, onTopicLearned }) {
 
 const s = {
   wrap: { paddingBottom: '2rem' },
-  searchRow: { display: 'flex', gap: 10, marginBottom: '1.25rem' },
-  input: {
-    flex: 1, background: 'var(--card)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r)', padding: '12px 16px', fontSize: 15,
-    color: 'var(--text)', outline: 'none',
-  },
-  goBtn: {
-    background: 'var(--purple)', border: 'none', borderRadius: 'var(--r)',
-    padding: '12px 22px', color: '#fff', fontSize: 14, fontWeight: 600,
-    transition: 'background 0.15s', display: 'flex', alignItems: 'center', gap: 6,
-  },
-  suggWrap: { marginBottom: '1.5rem' },
-  suggLabel: { fontSize: 13, color: 'var(--text2)', marginBottom: 10 },
-  suggGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8 },
-  suggChip: {
+  roadmapHeader: { marginBottom: '2rem' },
+  roadmapTitle: { fontSize: 24, fontWeight: 700, marginBottom: 8 },
+  roadmapOverview: { fontSize: 16, color: 'var(--text2)', lineHeight: 1.6, maxWidth: 650 },
+  roadmapGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16, marginBottom: '2.5rem' },
+  nodeCard: {
     background: 'var(--card)', border: '1px solid var(--border)',
-    borderRadius: 8, padding: '8px 12px', fontSize: 13, color: 'var(--text2)',
-    textAlign: 'left', transition: 'all 0.15s',
+    borderRadius: 'var(--r-lg)', padding: '1.25rem',
+    display: 'flex', gap: 16, alignItems: 'flex-start',
+    textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s',
+    position: 'relative', overflow: 'hidden',
   },
-  controlsRow: { display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' },
+  nodeNum: {
+    width: 32, height: 32, borderRadius: '50%', background: 'var(--bg3)',
+    border: '1px solid var(--border)', display: 'flex', alignItems: 'center',
+    justifyContent: 'center', fontSize: 14, fontWeight: 700, color: 'var(--purple2)',
+    flexShrink: 0,
+  },
+  nodeContent: { flex: 1 },
+  nodeLabel: { fontSize: 15, fontWeight: 700, color: 'var(--text)', marginBottom: 4 },
+  nodeDesc: { fontSize: 12, color: 'var(--text2)', lineHeight: 1.5 },
+  statusBadge: {
+    position: 'absolute', top: 0, right: 0, padding: '2px 8px',
+    fontSize: 9, fontWeight: 800, color: '#000',
+    borderBottomLeftRadius: 8,
+  },
+  controlsRow: { display: 'flex', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'flex-end' },
   controlGroup: {},
   ctrlLabel: { fontSize: 11, fontWeight: 600, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 7 },
   chipRow: { display: 'flex', gap: 6, flexWrap: 'wrap' },
@@ -216,6 +233,11 @@ const s = {
   chipActive: {
     background: 'rgba(124,110,247,0.14)', borderColor: 'var(--purple)',
     color: 'var(--purple2)', fontWeight: 600,
+  },
+  backBtn: {
+    background: 'var(--bg3)', border: '1px solid var(--border)',
+    borderRadius: 8, padding: '6px 12px', fontSize: 12, color: 'var(--text2)',
+    marginLeft: 'auto',
   },
   errorBox: {
     background: 'rgba(255,107,107,0.08)', border: '1px solid rgba(255,107,107,0.25)',

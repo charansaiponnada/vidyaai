@@ -45,6 +45,9 @@ export default function App() {
           Vidya<span style={{ color: 'var(--purple2)' }}>AI</span>
         </div>
         <div style={styles.navInfo}>
+          <a href="/pitch_deck.html" target="_blank" style={styles.pitchBtn}>
+            📽️ Pitch Deck
+          </a>
           <span style={styles.navChip}>
             👤 {config.name}
           </span>
@@ -132,6 +135,13 @@ const styles = {
     background: 'var(--bg3)', border: '1px solid var(--border)',
     padding: '4px 12px', borderRadius: 20,
     fontSize: 12, color: 'var(--text2)',
+  },
+  pitchBtn: {
+    background: 'var(--bg3)', border: '1px solid var(--purple)',
+    padding: '4px 12px', borderRadius: 20,
+    fontSize: 12, color: 'var(--purple2)',
+    textDecoration: 'none', marginRight: 8,
+    display: 'flex', alignItems: 'center', gap: 4,
   },
   resetBtn: {
     background: 'transparent', border: '1px solid var(--border)',

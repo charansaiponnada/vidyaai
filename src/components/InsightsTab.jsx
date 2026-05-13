@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { detectLearningInsight } from '../gemini'
 
 export default function InsightsTab({ config, quizHistory, learnedTopics }) {
@@ -24,9 +25,9 @@ export default function InsightsTab({ config, quizHistory, learnedTopics }) {
 
   const inferredStyle = useMemo(() => {
     if (total < 3) return null
-    if (acc >= 75) return { label: 'Quick Learner', emoji: 'lightning', desc: 'You absorb concepts fast. Try harder difficulty to keep growing.' }
-    if (acc >= 50) return { label: 'Steady Learner', emoji: 'chart', desc: 'Consistent progress. Review weak topics and you will level up.' }
-    return { label: 'Needs Practice', emoji: 'repeat', desc: 'Focus on one topic at a time and use the Learn tab with Simple mode.' }
+    if (acc >= 75) return { label: 'Quick Learner', emoji: '\u26A1', desc: 'You absorb concepts fast. Try harder difficulty to keep growing.' }
+    if (acc >= 50) return { label: 'Steady Learner', emoji: '\uD83D\uDCC8', desc: 'Consistent progress. Review weak topics and you\'ll level up.' }
+    return { label: 'Needs Practice', emoji: '\uD83D\uDD01', desc: 'Focus on one topic at a time and use the Learn tab with Simple mode.' }
   }, [acc, total])
 
   async function generateInsight() {
@@ -48,78 +49,154 @@ export default function InsightsTab({ config, quizHistory, learnedTopics }) {
 
   if (total === 0 && learnedTopics.length === 0) {
     return (
-      <div style={s.empty}>
-        <p style={{ fontSize: 32, marginBottom: 12 }}>🔍</p>
-        <p style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>No data yet</p>
-        <p style={{ fontSize: 14, color: 'var(--text2)' }}>Learn topics and take quizzes to unlock your insights.</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={s.empty}
+      >
+        <div style={s.emptyIcon}>I</div>
+        <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }} className="text-gradient">No data yet</h3>
+        <p style={{ fontSize: 15, color: 'var(--text-secondary)', maxWidth: 300, margin: '0 auto' }}>
+          Learn topics and take quizzes to unlock your insights.
+        </p>
+      </motion.div>
     )
+  }
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  }
+
+  const item = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
   }
 
   return (
     <div style={s.wrap}>
-      <div style={s.summaryGrid}>
-        <MetricCard label="Topics Learned" value={learnedTopics.length} color="var(--purple2)" />
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        style={s.summaryGrid}
+      >
+        <MetricCard label="Topics Learned" value={learnedTopics.length} color="var(--purple-bright)" />
         <MetricCard label="Quizzes Taken"  value={total}               color="var(--blue)"    />
         <MetricCard label="Accuracy" value={acc + '%'} color={acc >= 70 ? 'var(--teal)' : acc >= 40 ? 'var(--amber)' : 'var(--coral)'} />
         <MetricCard label="Correct" value={correct} color="var(--teal)" />
-      </div>
+      </motion.div>
 
-      {inferredStyle && (
-        <div style={s.styleCard}>
-          <span style={{ fontSize: 28 }}>{inferredStyle.emoji === 'lightning' ? '⚡' : inferredStyle.emoji === 'chart' ? '📈' : '🔁'}</span>
-          <div>
-            <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>Learning profile: {inferredStyle.label}</p>
-            <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.6 }}>{inferredStyle.desc}</p>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {inferredStyle && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={s.styleCard}
+          >
+            <div style={s.styleEmoji}>{inferredStyle.emoji}</div>
+            <div>
+              <p style={{ fontSize: 16, fontWeight: 800, marginBottom: 6, color: 'var(--text-primary)' }}>Profile: {inferredStyle.label}</p>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{inferredStyle.desc}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {topicPerf.length > 0 && (
-        <div style={s.section}>
-          <p style={s.sectionTitle}>Topic-wise performance</p>
-          <div style={s.perfList}>
-            {topicPerf.map(t => (
-              <div key={t.topic} style={s.perfRow}>
-                <span style={s.perfTopic}>{t.topic}</span>
-                <div style={s.perfBarBg}>
-                  <div style={{ ...s.perfBarFill, width: t.pct + '%', background: t.pct >= 75 ? 'var(--teal)' : t.pct >= 45 ? 'var(--amber)' : 'var(--coral)' }} />
+      <div style={s.mainLayout}>
+        {topicPerf.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            style={s.section}
+          >
+            <p style={s.sectionTitle}>Topic Performance</p>
+            <div style={s.perfList}>
+              {topicPerf.map(t => (
+                <div key={t.topic} style={s.perfRow}>
+                  <span style={s.perfTopic}>{t.topic}</span>
+                  <div style={s.perfBarBg}>
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: t.pct + '%' }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                      style={{ ...s.perfBarFill, background: t.pct >= 75 ? 'var(--teal)' : t.pct >= 45 ? 'var(--amber)' : 'var(--coral)' }}
+                    />
+                  </div>
+                  <span style={s.perfPct}>{t.pct}%</span>
                 </div>
-                <span style={s.perfPct}>{t.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-      <div style={s.section}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <p style={s.sectionTitle}>AI-generated personalised insight</p>
-          <button style={{ ...s.genBtn, opacity: loading || total < 1 ? 0.5 : 1 }} onClick={generateInsight} disabled={loading || total < 1}>
-            {loading ? 'Analyzing...' : '✨ Generate insight'}
-          </button>
-        </div>
-        {error && <div style={s.errorBox}>{error}</div>}
-        {loading && (
-          <div style={s.insightCard}>
-            {[85,70,90,60,75].map((w,i) => <div key={i} className="skeleton" style={{ height:15, width: w+'%', borderRadius:4, marginBottom:10 }} />)}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+          style={s.section}
+          className="card-shine"
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: 12 }}>
+            <p style={s.sectionTitle}>AI Personalized Insight</p>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              style={{ ...s.genBtn, opacity: loading || total < 1 ? 0.55 : 1 }}
+              onClick={generateInsight}
+              disabled={loading || total < 1}
+            >
+              {loading ? (
+                <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block' }} />
+              ) : 'Generate Insight'}
+            </motion.button>
           </div>
-        )}
-        {insight && !loading && (
-          <div style={s.insightCard} className="fade-in">
-            <p style={{ fontSize:10, color:'var(--text3)', fontFamily:'var(--mono)', marginBottom:10, textTransform:'uppercase', letterSpacing:'0.06em' }}>
-              Powered by Gemini · Language: {config.language}
-            </p>
-            {insight.split('\n').filter(Boolean).map((line,i) => (
-              <p key={i} style={{ fontSize:14, color:'var(--text)', lineHeight:1.8, marginBottom:8 }}>{line}</p>
-            ))}
-          </div>
-        )}
-        {!insight && !loading && (
-          <div style={s.insightPlaceholder}>
-            {total < 1 ? 'Take at least 1 quiz to unlock AI insights.' : 'Click "Generate insight" for personalized AI feedback in ' + config.language + '.'}
-          </div>
-        )}
+
+          {error && <div style={s.errorBox}>{error}</div>}
+
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={s.insightCard}
+              >
+                {[90, 75, 95, 65, 80].map((w,i) => <div key={i} className="skeleton" style={{ height: 16, width: w+'%', borderRadius: 4, marginBottom: 12 }} />)}
+              </motion.div>
+            ) : insight ? (
+              <motion.div
+                key="insight"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={s.insightCard}
+              >
+                <p style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
+                  VidyaAI Engine &middot; Language: {config.language}
+                </p>
+                {insight.split('\n').filter(Boolean).map((line, i) => (
+                  <p key={i} style={{ fontSize: 15, color: 'var(--text-primary)', lineHeight: 1.8, marginBottom: 10 }}>{line}</p>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="placeholder"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={s.insightPlaceholder}
+              >
+                {total < 1
+                  ? 'Take at least 1 quiz to unlock AI insights.'
+                  : `Click "Generate Insight" for personalized feedback in ${config.language}.`}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   )
@@ -127,29 +204,62 @@ export default function InsightsTab({ config, quizHistory, learnedTopics }) {
 
 function MetricCard({ label, value, color }) {
   return (
-    <div style={s.metricCard}>
-      <span style={{ fontSize:26, fontWeight:700, color, fontFamily:'var(--mono)' }}>{value}</span>
-      <span style={{ fontSize:11, color:'var(--text2)', marginTop:3 }}>{label}</span>
-    </div>
+    <motion.div whileHover={{ y: -4 }} style={s.metricCard}>
+      <span style={{ fontSize: 28, fontWeight: 800, color, fontFamily: 'var(--font-mono)' }}>{value}</span>
+      <span style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 4, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
+    </motion.div>
   )
 }
 
 const s = {
   wrap: { paddingBottom: '2rem' },
-  empty: { textAlign:'center', padding:'4rem 2rem', background:'var(--card)', border:'1px solid var(--border)', borderRadius:'var(--r-lg)' },
-  summaryGrid: { display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10, marginBottom:'1.25rem' },
-  metricCard: { background:'var(--card)', border:'1px solid var(--border)', borderRadius:'var(--r)', padding:'1rem', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center' },
-  styleCard: { background:'rgba(124,110,247,0.08)', border:'1px solid rgba(124,110,247,0.22)', borderRadius:'var(--r-lg)', padding:'1.25rem 1.5rem', display:'flex', alignItems:'flex-start', gap:16, marginBottom:'1.25rem' },
-  section: { background:'var(--card)', border:'1px solid var(--border)', borderRadius:'var(--r-lg)', padding:'1.5rem', marginBottom:'1.25rem' },
-  sectionTitle: { fontSize:11, fontWeight:600, color:'var(--text3)', textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:0 },
-  perfList: { display:'flex', flexDirection:'column', gap:10 },
-  perfRow: { display:'grid', gridTemplateColumns:'140px 1fr 42px', gap:12, alignItems:'center' },
-  perfTopic: { fontSize:13, color:'var(--text2)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' },
-  perfBarBg: { height:6, background:'var(--bg3)', borderRadius:3, overflow:'hidden' },
-  perfBarFill: { height:'100%', borderRadius:3, transition:'width 0.6s ease' },
-  perfPct: { fontSize:12, color:'var(--text2)', fontFamily:'var(--mono)', textAlign:'right' },
-  genBtn: { background:'var(--purple)', border:'none', borderRadius:8, padding:'8px 16px', color:'#fff', fontSize:13, fontWeight:600, display:'flex', alignItems:'center', gap:6 },
-  insightCard: { background:'var(--bg2)', border:'1px solid var(--border)', borderRadius:'var(--r)', padding:'1.25rem' },
-  insightPlaceholder: { fontSize:13, color:'var(--text3)', fontStyle:'italic', padding:'1.5rem', textAlign:'center', background:'var(--bg2)', borderRadius:'var(--r)' },
-  errorBox: { background:'rgba(255,107,107,0.08)', border:'1px solid rgba(255,107,107,0.25)', borderRadius:'var(--r)', padding:'12px 16px', fontSize:14, color:'var(--coral)', marginBottom:'1rem' },
+  empty: {
+    textAlign: 'center', padding: '5rem 2rem',
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-xl)',
+  },
+  emptyIcon: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: 56, height: 56, borderRadius: 16,
+    background: 'var(--purple-muted)', color: 'var(--purple-bright)',
+    fontSize: 24, fontWeight: 800,
+    marginBottom: 20,
+  },
+  summaryGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: '1.5rem' },
+  metricCard: {
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)', padding: '1.25rem',
+    display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+  },
+  styleCard: {
+    background: 'var(--purple-muted)',
+    border: '1px solid var(--border-accent)',
+    borderRadius: 'var(--radius-lg)',
+    padding: '1.5rem 2rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 20,
+    marginBottom: '1.5rem',
+    boxShadow: 'var(--shadow-glow)',
+  },
+  styleEmoji: {
+    width: 48, height: 48, borderRadius: 14,
+    background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: 22,
+    flexShrink: 0,
+  },
+  mainLayout: { display: 'flex', flexDirection: 'column', gap: 20 },
+  section: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '2rem' },
+  sectionTitle: { fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.5rem' },
+  perfList: { display: 'flex', flexDirection: 'column', gap: 14 },
+  perfRow: { display: 'grid', gridTemplateColumns: '160px 1fr 48px', gap: 16, alignItems: 'center' },
+  perfTopic: { fontSize: 14, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 },
+  perfBarBg: { height: 8, background: 'var(--bg-secondary)', borderRadius: 4, overflow: 'hidden' },
+  perfBarFill: { height: '100%', borderRadius: 4 },
+  perfPct: { fontSize: 13, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', textAlign: 'right', fontWeight: 700 },
+  genBtn: { background: 'var(--purple)', border: 'none', borderRadius: 'var(--radius-md)', padding: '10px 20px', color: '#fff', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, boxShadow: 'var(--shadow-sm)' },
+  insightCard: { background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', padding: '1.5rem 2rem' },
+  insightPlaceholder: { fontSize: 14, color: 'var(--text-muted)', fontStyle: 'italic', padding: '2.5rem', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' },
+  errorBox: { background: 'var(--coral-muted)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 'var(--radius-md)', padding: '14px 20px', fontSize: 14, color: 'var(--coral)', marginBottom: '1rem' },
 }

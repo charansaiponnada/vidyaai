@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VidyaAI — Pitch Deck | ElevateX 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#06060e;--ink2:#0e0e1c;--ink3:#161628;
+  --bd:#1e1e38;--bd2:#2c2c4a;
+  --v:#7b6cf6;--v2:#a99eff;--v3:#d4ceff;
+  --g:#1fffa8;--g2:#5effc6;
+  --am:#ffb347;--co:#ff6b6b;--bl:#4da6ff;
+  --t:#e8e8f4;--t2:#7878a0;--t3:#3a3a5c;
+  --fd:'Bebas Neue',sans-serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html,body{width:100%;height:100%;background:var(--ink);color:var(--t);font-family:var(--fb);overflow:hidden}
+#deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+
+/* SLIDES */
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease,transform .45s ease;
+  transform:translateX(50px);
+  overflow:hidden;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit{opacity:0;transform:translateX(-50px)}
+
+/* INNER — always fits viewport with padding */
+.inner{
+  flex:1;display:flex;flex-direction:column;
+  padding:3.5rem 5rem 5.5rem;
+  overflow:hidden;
+  position:relative;
+}
+
+/* BOTTOM NAV */
+#nav{
+  position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:8px;
+  background:rgba(14,14,28,.9);border:1px solid var(--bd2);
+  backdrop-filter:blur(12px);padding:9px 16px;border-radius:40px;z-index:999;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--bd2);cursor:pointer;transition:all .2s}
+.dot.on{background:var(--v2);transform:scale(1.35)}
+.nbtn{background:transparent;border:1px solid var(--bd2);border-radius:20px;padding:4px 14px;
+  color:var(--t2);font-family:var(--fb);font-size:12px;cursor:pointer;transition:all .15s}
+.nbtn:hover{border-color:var(--v);color:var(--t)}
+#ctr{font-family:var(--fm);font-size:11px;color:var(--t3);min-width:36px;text-align:center}
+#hint{position:fixed;top:1.2rem;right:1.5rem;font-size:11px;color:var(--t3);font-family:var(--fm);z-index:999}
+
+/* SHARED HELPERS */
+.eyebrow{font-family:var(--fm);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.6rem}
+.disp{font-family:var(--fd);text-transform:uppercase;line-height:.96}
+.tag{display:inline-block;font-family:var(--fm);font-size:11px;text-transform:uppercase;letter-spacing:.1em;padding:4px 12px;border-radius:20px}
+.tv{background:rgba(123,108,246,.15);color:var(--v2);border:1px solid rgba(123,108,246,.3)}
+.tg{background:rgba(31,255,168,.10);color:var(--g);border:1px solid rgba(31,255,168,.25)}
+.ta{background:rgba(255,179,71,.10);color:var(--am);border:1px solid rgba(255,179,71,.25)}
+.tc{background:rgba(255,107,107,.10);color:var(--co);border:1px solid rgba(255,107,107,.25)}
+.pill{background:var(--ink3);border:1px solid var(--bd2);border-radius:8px;padding:5px 12px;font-size:11px;font-family:var(--fm);color:var(--t2);display:inline-flex;align-items:center;gap:5px}
+.card{background:var(--ink2);border:1px solid var(--bd);border-radius:14px;padding:1.1rem 1.25rem}
+.check{width:18px;height:18px;border-radius:50%;background:rgba(31,255,168,.12);border:1px solid rgba(31,255,168,.25);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--g);flex-shrink:0;margin-top:2px}
+
+/* GLOWS / BG EFFECTS */
+.glow{position:absolute;border-radius:50%;pointer-events:none}
+
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.slide.active .ani{animation:up .5s both}
+.slide.active .ani1{animation-delay:.05s}
+.slide.active .ani2{animation-delay:.12s}
+.slide.active .ani3{animation-delay:.19s}
+.slide.active .ani4{animation-delay:.26s}
+.slide.active .ani5{animation-delay:.33s}
+.slide.active .ani6{animation-delay:.40s}
+
+/* ─────────────────────────────
+   S1 COVER
+───────────────────────────── */
+#s1 .inner{justify-content:center;align-items:flex-start}
+#s1 .g1{width:700px;height:700px;right:-180px;top:-200px;background:radial-gradient(circle,rgba(123,108,246,.15) 0%,transparent 65%)}
+#s1 .g2{width:350px;height:350px;left:100px;bottom:-80px;background:radial-gradient(circle,rgba(31,255,168,.08) 0%,transparent 65%)}
+#s1 .watermark{position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:30vw;color:rgba(123,108,246,.04);line-height:1;pointer-events:none}
+#s1 h1{font-size:clamp(5rem,12vw,10rem);color:var(--t);margin:.6rem 0}
+#s1 h1 em{color:var(--v2);font-style:normal}
+#s1 .sub{font-size:clamp(.9rem,1.6vw,1.15rem);color:var(--t2);font-weight:300;max-width:520px;line-height:1.7;margin-bottom:2rem}
+#s1 .meta{display:flex;gap:2rem;flex-wrap:wrap}
+#s1 .meta span{font-size:12px;color:var(--t3);font-family:var(--fm)}
+#s1 .meta span b{color:var(--t2)}
+
+/* ─────────────────────────────
+   S2 PROBLEM
+───────────────────────────── */
+#s2 .inner{justify-content:center}
+#s2 .top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--co),transparent)}
+#s2 h2{font-size:clamp(2.8rem,6vw,5rem);margin-bottom:2rem}
+#s2 h2 em{color:var(--co);font-style:normal}
+#s2 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+#s2 .card{position:relative;overflow:hidden}
+#s2 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+#s2 .card:nth-child(1)::before{background:var(--co)}
+#s2 .card:nth-child(2)::before{background:var(--am)}
+#s2 .card:nth-child(3)::before{background:var(--v)}
+#s2 .big{font-family:var(--fd);font-size:3.5rem;line-height:1;margin-bottom:.4rem}
+#s2 .card:nth-child(1) .big{color:rgba(255,107,107,.35)}
+#s2 .card:nth-child(2) .big{color:rgba(255,179,71,.35)}
+#s2 .card:nth-child(3) .big{color:rgba(123,108,246,.35)}
+#s2 .ctitle{font-size:14px;font-weight:600;margin-bottom:.4rem}
+#s2 .cdesc{font-size:12.5px;color:var(--t2);line-height:1.65}
+
+/* ─────────────────────────────
+   S3 SOLUTION
+───────────────────────────── */
+#s3 .inner{justify-content:center}
+#s3 .top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--g),transparent)}
+#s3 h2{font-size:clamp(2.5rem,5.5vw,4.5rem);margin-bottom:.35rem}
+#s3 h2 em{color:var(--g);font-style:normal}
+#s3 .sub{font-size:14px;color:var(--t2);margin-bottom:1.5rem;max-width:560px}
+#s3 .feats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.25rem}
+#s3 .feat{background:var(--ink2);border:1px solid var(--bd);border-radius:12px;padding:1rem .9rem;text-align:center}
+#s3 .feat-ic{font-size:22px;margin-bottom:.5rem}
+#s3 .feat-t{font-size:12px;font-weight:600;margin-bottom:.3rem;line-height:1.3}
+#s3 .feat-d{font-size:11px;color:var(--t2);line-height:1.5}
+#s3 .stmt{background:rgba(31,255,168,.06);border:1px solid rgba(31,255,168,.18);border-radius:12px;padding:1rem 1.4rem;font-size:13px;color:var(--t2);line-height:1.7}
+#s3 .stmt strong{color:var(--g2)}
+
+/* ─────────────────────────────
+   S4 HOW IT WORKS
+───────────────────────────── */
+#s4 .inner{justify-content:center}
+#s4 h2{font-size:clamp(2.5rem,5vw,4rem);margin-bottom:1.75rem}
+#s4 h2 em{color:var(--v2);font-style:normal}
+#s4 .flow{display:flex;align-items:flex-start;gap:0;position:relative;margin-bottom:1.75rem}
+#s4 .flow::before{content:'';position:absolute;top:24px;left:24px;right:24px;height:1px;background:linear-gradient(90deg,var(--v),var(--g));z-index:0}
+#s4 .fstep{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;padding:0 4px}
+#s4 .fnum{width:48px;height:48px;border-radius:50%;background:var(--ink);border:2px solid var(--v);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:1.2rem;color:var(--v2);margin-bottom:.75rem;flex-shrink:0}
+#s4 .fstep:last-child .fnum{border-color:var(--g);color:var(--g)}
+#s4 .fstep:nth-child(3) .fnum{border-color:var(--am);color:var(--am)}
+#s4 .ftit{font-size:12px;font-weight:600;margin-bottom:.25rem}
+#s4 .fdesc{font-size:11px;color:var(--t2);line-height:1.55;max-width:120px}
+#s4 .pills{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ─────────────────────────────
+   S5 IMPACT
+───────────────────────────── */
+#s5 .inner{justify-content:center}
+#s5 .top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--g),var(--v),transparent)}
+#s5 h2{font-size:clamp(2.5rem,5vw,4rem);margin-bottom:1.5rem}
+#s5 h2 em{color:var(--g);font-style:normal}
+#s5 .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+#s5 .ncard{background:var(--ink2);border:1px solid var(--bd);border-radius:12px;padding:1rem;text-align:center}
+#s5 .nbig{font-family:var(--fd);font-size:2.8rem;line-height:1;margin-bottom:.3rem}
+#s5 .nlbl{font-size:11px;color:var(--t2);line-height:1.5}
+#s5 .jgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+#s5 .jitem{background:var(--ink2);border:1px solid var(--bd);border-radius:10px;padding:.9rem;display:flex;align-items:flex-start;gap:8px}
+#s5 .jtext{font-size:11.5px;color:var(--t2);line-height:1.6}
+#s5 .jtext strong{color:var(--t);display:block;margin-bottom:1px;font-size:12px}
+
+/* ─────────────────────────────
+   S6 DEMO SCRIPT
+───────────────────────────── */
+#s6 .inner{justify-content:center}
+#s6 .top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--am),transparent)}
+#s6 h2{font-size:clamp(2.5rem,5vw,4rem);margin-bottom:.35rem}
+#s6 h2 em{color:var(--am);font-style:normal}
+#s6 .dsub{font-size:13px;color:var(--t2);margin-bottom:1.25rem}
+#s6 .timeline{display:flex;flex-direction:column;gap:0;position:relative;margin-bottom:1.25rem}
+#s6 .timeline::before{content:'';position:absolute;left:17px;top:18px;bottom:18px;width:1px;background:linear-gradient(180deg,var(--v),var(--g))}
+#s6 .dstep{display:grid;grid-template-columns:36px 1fr;gap:1rem;align-items:flex-start;padding:.65rem 0}
+#s6 .dstep .time{width:36px;height:36px;border-radius:50%;background:var(--ink3);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:8.5px;color:var(--t3);text-align:center;line-height:1.3;flex-shrink:0}
+#s6 .dtit{font-size:13px;font-weight:600;margin-bottom:2px}
+#s6 .ddesc{font-size:11.5px;color:var(--t2);line-height:1.6}
+#s6 .wow{background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.22);border-radius:12px;padding:1rem 1.4rem;font-size:13px;color:var(--t2);line-height:1.7}
+#s6 .wow strong{color:var(--am)}
+
+/* ─────────────────────────────
+   S7 CLOSE
+───────────────────────────── */
+#s7 .inner{justify-content:center;align-items:center;text-align:center}
+#s7 .g1{width:550px;height:550px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(123,108,246,.14) 0%,transparent 65%)}
+#s7 .g2{width:350px;height:350px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(31,255,168,.07) 0%,transparent 55%)}
+#s7 h2{font-size:clamp(3rem,8vw,7rem);margin:1rem 0 1.25rem;line-height:.96;position:relative;z-index:1}
+#s7 h2 .v{color:var(--v2)}
+#s7 h2 .g{color:var(--g)}
+#s7 .quote{font-size:clamp(.9rem,1.4vw,1.1rem);color:var(--t2);font-weight:300;max-width:580px;line-height:1.75;margin-bottom:2.5rem;font-style:italic;position:relative;z-index:1}
+#s7 .cmeta{display:flex;gap:2rem;justify-content:center;font-size:12px;color:var(--t3);font-family:var(--fm);flex-wrap:wrap;position:relative;z-index:1}
+#s7 .cmeta b{color:var(--t2);display:block;margin-bottom:2px}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- ── S1 COVER ── -->
+<div class="slide active" id="s1">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="watermark">V</div>
+  <div class="inner">
+    <div class="tag tg ani ani1">⚡ ElevateX 2026 · Season 2</div>
+    <h1 class="disp ani ani2">Vidya<em>AI</em></h1>
+    <p class="sub ani ani3">An adaptive AI tutor that explains any topic in Telugu, Hindi, Tamil, or English — and gets smarter as you learn.</p>
+    <div class="meta ani ani4">
+      <span><b>Track</b> Education &amp; Learning + Social Impact</span>
+      <span><b>AI</b> Google Gemini 2.0 Flash</span>
+      <span><b>Stack</b> React · Vite · Recharts</span>
+      <span><b>Date</b> May 17, 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── S2 PROBLEM ── -->
+<div class="slide" id="s2">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <p class="eyebrow ani ani1">01 — The Problem</p>
+    <h2 class="disp ani ani2">Education is<br/><em>broken</em> for millions.</h2>
+    <div class="grid">
+      <div class="card ani ani3">
+        <div class="big">250M</div>
+        <div class="ctitle">Language barrier blocks learning</div>
+        <div class="cdesc">250 million Indian students study in English — a language that isn't their mother tongue. Concepts don't stick.</div>
+      </div>
+      <div class="card ani ani4">
+        <div class="big">1:40</div>
+        <div class="ctitle">No personal feedback at scale</div>
+        <div class="cdesc">The average teacher-to-student ratio is 1:40. No teacher can adapt to 40 different learning styles simultaneously.</div>
+      </div>
+      <div class="card ani ani5">
+        <div class="big">60%</div>
+        <div class="ctitle">Rural students left behind</div>
+        <div class="cdesc">60%+ of rural students in AP &amp; Telangana underperform due to language and comprehension barriers in education.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── S3 SOLUTION ── -->
+<div class="slide" id="s3">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <p class="eyebrow ani ani1">02 — Our Solution</p>
+    <h2 class="disp ani ani2">Meet <em>VidyaAI</em></h2>
+    <p class="sub ani ani2">A personal AI tutor for every student — adapts to your level, speaks your language, shows you what you don't know.</p>
+    <div class="feats">
+      <div class="feat ani ani3">
+        <div class="feat-ic">🧠</div>
+        <div class="feat-t">Adaptive Explanation</div>
+        <div class="feat-d">5 learning styles × 3 difficulty levels in your language</div>
+      </div>
+      <div class="feat ani ani3">
+        <div class="feat-ic">🎯</div>
+        <div class="feat-t">Adaptive Quiz</div>
+        <div class="feat-d">Difficulty auto-scales based on your performance streak</div>
+      </div>
+      <div class="feat ani ani4">
+        <div class="feat-ic">📊</div>
+        <div class="feat-t">Knowledge Heatmap</div>
+        <div class="feat-d">Radar chart of strong vs weak topics — updated live</div>
+      </div>
+      <div class="feat ani ani4">
+        <div class="feat-ic">🌐</div>
+        <div class="feat-t">Regional Language</div>
+        <div class="feat-d">Translate &amp; simplify any content to Telugu, Hindi, Tamil</div>
+      </div>
+      <div class="feat ani ani5">
+        <div class="feat-ic">✨</div>
+        <div class="feat-t">AI Insights</div>
+        <div class="feat-d">Personalized learning profile and feedback in your language</div>
+      </div>
+    </div>
+    <div class="stmt ani ani6">
+      One student. One subject. One language preference. <strong>VidyaAI builds a completely different learning experience for each of them — automatically.</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ── S4 HOW IT WORKS ── -->
+<div class="slide" id="s4">
+  <div class="inner">
+    <p class="eyebrow ani ani1">03 — Architecture</p>
+    <h2 class="disp ani ani2">Built on <em>Gemini</em> 2.0 Flash</h2>
+    <div class="flow ani ani3">
+      <div class="fstep">
+        <div class="fnum">1</div>
+        <div class="ftit">Student Setup</div>
+        <div class="fdesc">Name, subject, language, Gemini API key</div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">2</div>
+        <div class="ftit">Pick Topic</div>
+        <div class="fdesc">Type any topic or choose from 8 AI suggestions</div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">3</div>
+        <div class="ftit">AI Explains</div>
+        <div class="fdesc">Gemini generates in chosen language + style</div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">4</div>
+        <div class="ftit">Quiz Adapts</div>
+        <div class="fdesc">MCQs scale difficulty from your answer streak</div>
+      </div>
+      <div class="fstep">
+        <div class="fnum">5</div>
+        <div class="ftit">Map Updates</div>
+        <div class="fdesc">Heatmap + insights refresh with every interaction</div>
+      </div>
+    </div>
+    <div class="pills ani ani4">
+      <span class="pill">⚛️ React 18 + Vite 5</span>
+      <span class="pill">🤖 Gemini 2.0 Flash API</span>
+      <span class="pill">📈 Recharts RadarChart</span>
+      <span class="pill">🎨 Sora + JetBrains Mono</span>
+      <span class="pill">🌐 Browser-only — no backend</span>
+      <span class="pill">⚡ 1,600+ lines, builds in 7s</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── S5 IMPACT ── -->
+<div class="slide" id="s5">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <p class="eyebrow ani ani1">04 — Impact &amp; Judging</p>
+    <h2 class="disp ani ani2">Built for <em>real</em> impact</h2>
+    <div class="nums">
+      <div class="ncard ani ani3">
+        <div class="nbig" style="color:var(--v2)">250M+</div>
+        <div class="nlbl">Indian students who could benefit from regional-language AI tutoring</div>
+      </div>
+      <div class="ncard ani ani3">
+        <div class="nbig" style="color:var(--g)">4</div>
+        <div class="nlbl">Languages supported — English, Telugu, Hindi, Tamil</div>
+      </div>
+      <div class="ncard ani ani4">
+        <div class="nbig" style="color:var(--am)">5</div>
+        <div class="nlbl">Distinct AI-powered features, all working, all demoed today</div>
+      </div>
+      <div class="ncard ani ani4">
+        <div class="nbig" style="color:var(--co)">0</div>
+        <div class="nlbl">Backend servers needed — fully browser-based, deploy free</div>
+      </div>
+    </div>
+    <div class="jgrid">
+      <div class="jitem ani ani5"><span class="check">✓</span><div class="jtext"><strong>Innovation &amp; Originality</strong>No existing tool combines adaptive learning + regional AI language</div></div>
+      <div class="jitem ani ani5"><span class="check">✓</span><div class="jtext"><strong>Problem Understanding</strong>Rooted in India's real education gap — AP/Telangana specific</div></div>
+      <div class="jitem ani ani5"><span class="check">✓</span><div class="jtext"><strong>Technical Feasibility</strong>Live &amp; working — builds successfully in under 7 seconds</div></div>
+      <div class="jitem ani ani6"><span class="check">✓</span><div class="jtext"><strong>Solution Effectiveness</strong>Full demo loop: topic → explain → quiz → heatmap → insight</div></div>
+      <div class="jitem ani ani6"><span class="check">✓</span><div class="jtext"><strong>Impact &amp; Scalability</strong>Static SPA — deploy on Vercel, scales to millions, zero infra</div></div>
+      <div class="jitem ani ani6"><span class="check">✓</span><div class="jtext"><strong>Presentation Quality</strong>Dark UI, radar chart, live difficulty badge — striking demo</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── S6 DEMO ── -->
+<div class="slide" id="s6">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <p class="eyebrow ani ani1">05 — Demo Script</p>
+    <h2 class="disp ani ani2">5-minute <em>live</em> demo</h2>
+    <p class="dsub ani ani2">Every step is live on stage — no mockups, no slides, no pre-recorded video.</p>
+    <div class="timeline">
+      <div class="dstep ani ani3">
+        <div class="time">0:00</div>
+        <div><div class="dtit">Setup screen</div><div class="ddesc">Enter "Ravi", subject "Physics", language "Telugu" → Start Learning</div></div>
+      </div>
+      <div class="dstep ani ani3">
+        <div class="time">0:30</div>
+        <div><div class="dtit">Learn tab — Explain in Telugu</div><div class="ddesc">Type "Photosynthesis" → Style: Simple → Beginner → watch Telugu explanation generate live</div></div>
+      </div>
+      <div class="dstep ani ani4">
+        <div class="time">1:30</div>
+        <div><div class="dtit">Quiz tab — Adaptive difficulty</div><div class="ddesc">Answer 2 correct → difficulty badge flips Easy → Medium → wrong answer → drops back automatically</div></div>
+      </div>
+      <div class="dstep ani ani4">
+        <div class="time">3:00</div>
+        <div><div class="dtit">Heatmap tab — Knowledge radar</div><div class="ddesc">Show radar chart populating with topic scores — color grid of strong / medium / weak topics</div></div>
+      </div>
+      <div class="dstep ani ani5">
+        <div class="time">4:00</div>
+        <div><div class="dtit">Translate → Insights</div><div class="ddesc">Paste Newton's Law → translate to Telugu → switch to Insights → AI feedback in Telugu in 10 seconds</div></div>
+      </div>
+    </div>
+    <div class="wow ani ani6">
+      <strong>The wow moment:</strong> An English textbook paragraph becomes a simplified Telugu explanation + quiz + AI performance insight — all in 60 seconds, live on stage.
+    </div>
+  </div>
+</div>
+
+<!-- ── S7 CLOSE ── -->
+<div class="slide" id="s7">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="inner">
+    <div class="tag tg ani ani1">Learn · Share · Uplift</div>
+    <h2 class="disp ani ani2">Any student.<br/><span class="v">Any topic.</span><br/><span class="g">Any language.</span></h2>
+    <p class="quote ani ani3">"VidyaAI doesn't just teach — it listens. It adjusts. It speaks your language. That's what education should have always been."</p>
+    <div class="cmeta ani ani4">
+      <div><b>Project</b> VidyaAI</div>
+      <div><b>Hackathon</b> ElevateX 2026</div>
+      <div><b>Track</b> Education + Social Impact</div>
+      <div><b>Powered by</b> Google Gemini 2.0</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div id="nav">
+  <button class="nbtn" onclick="prev()">← Prev</button>
+  <div id="dots"></div>
+  <span id="ctr">1 / 7</span>
+  <button class="nbtn" onclick="next()">Next →</button>
+</div>
+<div id="hint">← → arrow keys</div>
+
+<script>
+const slides = document.querySelectorAll('.slide')
+const dotsEl = document.getElementById('dots')
+const ctr    = document.getElementById('ctr')
+let cur = 0
+
+slides.forEach((_,i) => {
+  const d = document.createElement('div')
+  d.className = 'dot' + (i===0?' on':'')
+  d.onclick = () => go(i)
+  dotsEl.appendChild(d)
+})
+
+function go(n) {
+  if (n === cur) return
+  slides[cur].classList.remove('active')
+  slides[cur].classList.add('exit')
+  const prev = cur
+  setTimeout(() => slides[prev].classList.remove('exit'), 500)
+  cur = ((n % slides.length) + slides.length) % slides.length
+  slides[cur].classList.add('active')
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('on', i===cur))
+  ctr.textContent = (cur+1) + ' / ' + slides.length
+}
+function next(){ go(cur+1) }
+function prev(){ go(cur-1) }
+
+document.addEventListener('keydown', e => {
+  if(['ArrowRight','ArrowDown',' '].includes(e.key)){ e.preventDefault(); next() }
+  if(['ArrowLeft','ArrowUp'].includes(e.key)){ e.preventDefault(); prev() }
+})
+let tx=0
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX })
+document.addEventListener('touchend',   e => {
+  const dx = tx - e.changedTouches[0].clientX
+  if(Math.abs(dx)>50){ dx>0 ? next() : prev() }
+})
+</script>
+</body>
+</html>

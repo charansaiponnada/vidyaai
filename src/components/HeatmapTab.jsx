@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { motion } from 'framer-motion'
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts'
 
 function getStrength(correct, total) {
@@ -10,10 +11,11 @@ function getStrength(correct, total) {
 }
 
 function getColor(strength) {
-  return { strong: 'var(--teal)', medium: 'var(--amber)', weak: 'var(--coral)', unseen: 'var(--text3)' }[strength]
+  return { strong: 'var(--teal)', medium: 'var(--amber)', weak: 'var(--coral)', unseen: 'var(--text-muted)' }[strength]
 }
+
 function getScore(strength) {
-  return { strong: 90, medium: 55, weak: 25, unseen: 0 }[strength]
+  return { strong: 95, medium: 60, weak: 30, unseen: 0 }[strength]
 }
 
 export default function HeatmapTab({ learnedTopics, quizHistory }) {
@@ -36,7 +38,7 @@ export default function HeatmapTab({ learnedTopics, quizHistory }) {
   }, [learnedTopics, quizHistory])
 
   const radarData = topicStats.slice(0, 8).map(t => ({
-    topic: t.topic.length > 14 ? t.topic.slice(0, 12) + '…' : t.topic,
+    topic: t.topic.length > 14 ? t.topic.slice(0, 12) + '\u2026' : t.topic,
     score: getScore(t.strength),
   }))
 
@@ -46,82 +48,131 @@ export default function HeatmapTab({ learnedTopics, quizHistory }) {
 
   if (topicStats.length === 0) {
     return (
-      <div style={s.empty}>
-        <p style={{ fontSize: 32, marginBottom: 12 }}>📊</p>
-        <p style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>No data yet</p>
-        <p style={{ fontSize: 14, color: 'var(--text2)' }}>Learn topics and take quizzes to build your knowledge map.</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={s.empty}
+      >
+        <div style={s.emptyIcon}>H</div>
+        <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }} className="text-gradient">No data yet</h3>
+        <p style={{ fontSize: 15, color: 'var(--text-secondary)', maxWidth: 300, margin: '0 auto' }}>
+          Learn topics and take quizzes to build your knowledge map.
+        </p>
+      </motion.div>
     )
+  }
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  }
+
+  const item = {
+    hidden: { opacity: 0, scale: 0.95 },
+    show: { opacity: 1, scale: 1 }
   }
 
   return (
     <div style={s.wrap}>
-      {/* Summary row */}
-      <div style={s.summaryRow}>
-        <SummaryCard label="Topics Explored" value={topicStats.length} color="var(--purple2)" />
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        style={s.summaryRow}
+      >
+        <SummaryCard label="Topics Explored" value={topicStats.length} color="var(--purple-bright)" />
         <SummaryCard label="Strong" value={strong} color="var(--teal)" />
         <SummaryCard label="Needs Work" value={medium} color="var(--amber)" />
         <SummaryCard label="Weak" value={weak} color="var(--coral)" />
-      </div>
+      </motion.div>
 
-      {/* Legend */}
-      <div style={s.legend}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        style={s.legend}
+      >
         {[
-          { color: 'var(--teal)',   label: 'Strong (≥75%)' },
-          { color: 'var(--amber)',  label: 'Medium (45–74%)' },
+          { color: 'var(--teal)',   label: 'Strong (\u226575%)' },
+          { color: 'var(--amber)',  label: 'Medium (45\u201374%)' },
           { color: 'var(--coral)', label: 'Weak (<45%)' },
-          { color: 'var(--text3)', label: 'Not quizzed' },
+          { color: 'var(--text-muted)', label: 'Not quizzed' },
         ].map(l => (
           <div key={l.label} style={s.legendItem}>
-            <span style={{ width: 10, height: 10, borderRadius: '50%', background: l.color, display: 'inline-block' }} />
+            <span style={{ width: 9, height: 9, borderRadius: '50%', background: l.color, display: 'inline-block' }} />
             {l.label}
           </div>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Radar chart */}
-      {radarData.length >= 3 && (
-        <div style={s.chartCard}>
-          <p style={s.chartTitle}>Knowledge radar</p>
-          <ResponsiveContainer width="100%" height={260}>
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="#252538" />
-              <PolarAngleAxis dataKey="topic" tick={{ fill: '#8888a8', fontSize: 11, fontFamily: 'Sora, sans-serif' }} />
-              <Radar name="Score" dataKey="score" stroke="#7c6ef7" fill="#7c6ef7" fillOpacity={0.22} strokeWidth={2} />
-              <Tooltip
-                contentStyle={{ background: '#111120', border: '1px solid #252538', borderRadius: 8, fontSize: 12 }}
-                labelStyle={{ color: '#e4e4f0' }}
-                formatter={v => [`${v}%`, 'Score']}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      <div style={s.mainLayout}>
+        {radarData.length >= 3 && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            style={s.chartCard}
+          >
+            <p style={s.chartTitle}>Knowledge Radar</p>
+            <div style={{ height: 300 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={radarData}>
+                  <PolarGrid stroke="var(--border)" />
+                  <PolarAngleAxis dataKey="topic" tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }} />
+                  <Radar name="Score" dataKey="score" stroke="var(--purple)" fill="var(--purple)" fillOpacity={0.15} strokeWidth={2} />
+                  <Tooltip
+                    contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 12, fontSize: 12, boxShadow: 'var(--shadow-md)' }}
+                    itemStyle={{ color: 'var(--text-primary)' }}
+                    labelStyle={{ color: 'var(--purple-bright)', fontWeight: 700, marginBottom: 4 }}
+                    formatter={v => [`${v}%`, 'Strength']}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+        )}
 
-      {/* Topic grid */}
-      <div style={s.grid}>
-        {topicStats.map(t => (
-          <div key={t.topic} style={s.cell}>
-            <div style={{ ...s.cellBar, background: getColor(t.strength) }} />
-            <p style={s.cellTopic}>{t.topic}</p>
-            <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 10 }}>
-              {t.total > 0 ? `${t.correct}/${t.total} correct` : 'Learned · not quizzed yet'}
-            </p>
-            <div style={s.barBg}>
-              <div style={{
-                ...s.barFill,
-                width: t.pct !== null ? `${t.pct}%` : '0%',
-                background: getColor(t.strength),
-              }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
-              <span style={{ fontSize: 10, color: getColor(t.strength), fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                {t.strength}
-              </span>
-              {t.pct !== null && <span style={{ fontSize: 10, color: 'var(--text3)', fontFamily: 'var(--mono)' }}>{t.pct}%</span>}
-            </div>
-          </div>
-        ))}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          style={s.grid}
+        >
+          {topicStats.map(t => (
+            <motion.div
+              key={t.topic}
+              variants={item}
+              whileHover={{ y: -4, borderColor: getColor(t.strength) }}
+              style={s.cell}
+            >
+              <div style={{ ...s.cellBar, background: getColor(t.strength) }} />
+              <p style={s.cellTopic}>{t.topic}</p>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>
+                {t.total > 0 ? `${t.correct}/${t.total} correct` : 'Learned, not quizzed'}
+              </p>
+              <div style={s.barBg}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: t.pct !== null ? `${t.pct}%` : '0%' }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  style={{
+                    ...s.barFill,
+                    background: getColor(t.strength),
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+                <span style={{ fontSize: 10, color: getColor(t.strength), fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {t.strength}
+                </span>
+                {t.pct !== null && <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{t.pct}%</span>}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </div>
   )
@@ -129,40 +180,49 @@ export default function HeatmapTab({ learnedTopics, quizHistory }) {
 
 function SummaryCard({ label, value, color }) {
   return (
-    <div style={s.summaryCard}>
-      <span style={{ fontSize: 24, fontWeight: 700, color, fontFamily: 'var(--mono)' }}>{value}</span>
-      <span style={{ fontSize: 11, color: 'var(--text2)', marginTop: 2 }}>{label}</span>
-    </div>
+    <motion.div whileHover={{ y: -4 }} style={s.summaryCard}>
+      <span style={{ fontSize: 28, fontWeight: 800, color, fontFamily: 'var(--font-mono)' }}>{value}</span>
+      <span style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 4, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
+    </motion.div>
   )
 }
 
 const s = {
   wrap: { paddingBottom: '2rem' },
   empty: {
-    textAlign: 'center', padding: '4rem 2rem',
-    background: 'var(--card)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r-lg)',
+    textAlign: 'center', padding: '5rem 2rem',
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-xl)',
   },
-  summaryRow: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: '1rem' },
+  emptyIcon: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: 56, height: 56, borderRadius: 16,
+    background: 'var(--purple-muted)', color: 'var(--purple-bright)',
+    fontSize: 24, fontWeight: 800,
+    marginBottom: 20,
+  },
+  summaryRow: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: '1.5rem' },
   summaryCard: {
-    background: 'var(--card)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r)', padding: '1rem',
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)', padding: '1.25rem',
     display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
   },
-  legend: { display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: '1.25rem' },
-  legendItem: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text2)' },
+  legend: { display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: '1.5rem', justifyContent: 'center' },
+  legendItem: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 },
+  mainLayout: { display: 'flex', flexDirection: 'column', gap: 20 },
   chartCard: {
-    background: 'var(--card)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r-lg)', padding: '1.5rem', marginBottom: '1.25rem',
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-lg)', padding: '2rem',
   },
-  chartTitle: { fontSize: 12, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600, marginBottom: '1rem' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: 12 },
+  chartTitle: { fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 800, marginBottom: '1.5rem' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 14 },
   cell: {
-    background: 'var(--card)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r)', padding: '1rem', position: 'relative', overflow: 'hidden',
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)', padding: '1.25rem', position: 'relative', overflow: 'hidden',
+    transition: 'all 0.2s ease',
   },
   cellBar: { position: 'absolute', top: 0, left: 0, right: 0, height: 3 },
-  cellTopic: { fontSize: 14, fontWeight: 600, marginBottom: 4 },
-  barBg: { height: 4, background: 'var(--bg3)', borderRadius: 2, overflow: 'hidden' },
-  barFill: { height: '100%', borderRadius: 2, transition: 'width 0.6s ease' },
+  cellTopic: { fontSize: 15, fontWeight: 700, marginBottom: 6, color: 'var(--text-primary)' },
+  barBg: { height: 6, background: 'var(--bg-secondary)', borderRadius: 3, overflow: 'hidden' },
+  barFill: { height: '100%', borderRadius: 3 },
 }

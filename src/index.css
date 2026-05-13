@@ -1,81 +1,185 @@
 :root {
-  --bg: #07070f;
-  --bg2: #0f0f1a;
-  --bg3: #151523;
-  --card: #111120;
-  --card2: #181828;
-  --border: #252538;
-  --border2: #2e2e48;
+  /* Background */
+  --bg: #050508;
+  --bg-secondary: #0a0a14;
+  --bg-elevated: #12121e;
+  --bg-card: #0c0c1a;
+  --bg-card-hover: #16162a;
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-bright: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(124, 110, 247, 0.25);
+
+  /* Brand */
   --purple: #7c6ef7;
-  --purple2: #9d92f9;
-  --purple3: #c4beff;
+  --purple-muted: rgba(124, 110, 247, 0.12);
+  --purple-bright: #a8a0fa;
+  --purple-glow: 0 0 24px rgba(124, 110, 247, 0.15);
+
+  /* Semantic */
   --teal: #2dd4a0;
-  --teal2: #5eeabb;
-  --amber: #f5a623;
-  --coral: #ff6b6b;
-  --blue: #4da6ff;
-  --text: #e4e4f0;
-  --text2: #8888a8;
-  --text3: #44445a;
-  --font: 'Sora', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-  --r: 10px;
-  --r-lg: 18px;
-  --r-xl: 24px;
+  --teal-muted: rgba(45, 212, 160, 0.08);
+  --amber: #f59e0b;
+  --amber-muted: rgba(245, 158, 11, 0.08);
+  --coral: #ef4444;
+  --coral-muted: rgba(239, 68, 68, 0.08);
+  --blue: #60a5fa;
+
+  /* Text */
+  --text-primary: #f1f1f9;
+  --text-secondary: #a1a1c3;
+  --text-muted: #6b6b8d;
+
+  /* Typography */
+  --font-sans: 'Sora', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 24px rgba(124, 110, 247, 0.12);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: var(--font);
+  font-family: var(--font-sans);
   background: var(--bg);
-  color: var(--text);
+  background-image:
+    radial-gradient(circle at 50% -20%, rgba(124, 110, 247, 0.12), transparent 60%),
+    radial-gradient(circle at 0% 100%, rgba(45, 212, 160, 0.04), transparent 40%);
+  background-attachment: fixed;
+  color: var(--text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
+/* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-button { cursor: pointer; font-family: var(--font); }
-input, textarea, select { font-family: var(--font); }
+/* Base elements */
+button {
+  cursor: pointer;
+  font-family: var(--font-sans);
+  outline: none;
+  border: none;
+  background: none;
+}
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+button:focus-visible {
+  outline: 2px solid var(--purple-bright);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+
+input, textarea, select {
+  font-family: var(--font-sans);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(1.4); }
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124, 110, 247, 0.12);
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+
+/* Glass mixin */
+.glass {
+  background: rgba(12, 12, 26, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.glass-strong {
+  background: rgba(12, 12, 26, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-bright);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--purple-bright));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card shine effect */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+.card-shine::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Animations */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-card-hover) 50%, var(--bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
 }
 @keyframes shimmer {
-  0%   { background-position: -200% 0; }
+  0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
-.fade-up   { animation: fadeUp  0.4s ease both; }
-.fade-in   { animation: fadeIn  0.3s ease both; }
-
-.spinner {
-  width: 20px; height: 20px;
-  border: 2px solid var(--border2);
-  border-top-color: var(--purple);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-}
-
-.skeleton {
-  background: linear-gradient(90deg, var(--bg3) 25%, var(--card2) 50%, var(--bg3) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 6px;
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .skeleton { animation: none; background: var(--bg-elevated); }
 }

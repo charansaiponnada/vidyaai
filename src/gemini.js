@@ -1,6 +1,10 @@
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+// Use 1.5-flash as default for higher stability in free tier, 2.0-flash as option
+const DEFAULT_MODEL = 'gemini-1.5-flash'
+const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
-async function callGemini(apiKey, prompt, systemInstruction = '') {
+async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAULT_MODEL) {
+  const url = `${BASE_URL}${model}:generateContent?key=${apiKey}`
+  
   const body = {
     contents: [{ parts: [{ text: prompt }] }],
     generationConfig: {
@@ -8,23 +12,33 @@ async function callGemini(apiKey, prompt, systemInstruction = '') {
       maxOutputTokens: 1500,
     },
   }
+  
   if (systemInstruction) {
     body.system_instruction = { parts: [{ text: systemInstruction }] }
   }
 
-  const res = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
 
-  if (!res.ok) {
-    const err = await res.json()
-    throw new Error(err?.error?.message || 'Gemini API error')
+    if (res.status === 429) {
+      throw new Error('API Rate Limit Exceeded (429). The Gemini free tier has limits. If you see "limit: 0", please ensure the Gemini API is enabled in your Google AI Studio project.')
+    }
+
+    if (!res.ok) {
+      const err = await res.json()
+      throw new Error(err?.error?.message || `Gemini API error (${res.status})`)
+    }
+
+    const data = await res.json()
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+  } catch (error) {
+    console.error('Gemini Call Failed:', error)
+    throw error
   }
-
-  const data = await res.json()
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
 }
 
 // FEATURE 1: Adaptive explanation - adjusts style + language

@@ -1,5 +1,5 @@
-// Use 1.5-flash as default for higher stability in free tier, 2.0-flash as option
-const DEFAULT_MODEL = 'gemini-1.5-flash'
+// Use 2.5-flash as default as requested by the user
+const DEFAULT_MODEL = 'gemini-2.5-flash'
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
 async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAULT_MODEL) {

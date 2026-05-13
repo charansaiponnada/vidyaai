@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VidyaAI — Pitch Deck | ElevateX 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:    #06060e;
+  --ink2:   #0d0d1c;
+  --ink3:   #14142a;
+  --border: #1e1e38;
+  --border2:#2a2a48;
+  --v:      #7b6cf6;   /* violet */
+  --v2:     #a99eff;
+  --v3:     #d4ceff;
+  --g:      #1fffa8;   /* green */
+  --g2:     #5effc6;
+  --amber:  #ffb347;
+  --coral:  #ff6b6b;
+  --text:   #e8e8f4;
+  --text2:  #7878a0;
+  --text3:  #3a3a5c;
+  --f-disp: 'Bebas Neue', sans-serif;
+  --f-body: 'DM Sans', sans-serif;
+  --f-mono: 'DM Mono', monospace;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--f-body);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── DECK SHELL ── */
+#deck {
+  width: 100vw; height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── SLIDES ── */
+.slide {
+  position: absolute; inset: 0;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(.4,0,.2,1), transform 0.55s cubic-bezier(.4,0,.2,1);
+  transform: translateX(60px);
+}
+.slide.active {
+  opacity: 1; pointer-events: all; transform: translateX(0);
+}
+.slide.exit {
+  opacity: 0; transform: translateX(-60px);
+}
+
+/* ── NAV ── */
+#nav {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(13,13,28,0.85);
+  border: 1px solid var(--border2);
+  backdrop-filter: blur(16px);
+  padding: 10px 18px; border-radius: 40px;
+  z-index: 1000;
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border2); cursor: pointer;
+  transition: all 0.2s;
+}
+.dot.active { background: var(--v2); transform: scale(1.3); }
+.nav-btn {
+  background: transparent; border: 1px solid var(--border2);
+  border-radius: 20px; padding: 5px 16px;
+  color: var(--text2); font-family: var(--f-body);
+  font-size: 12px; cursor: pointer;
+  transition: all 0.15s;
+}
+.nav-btn:hover { border-color: var(--v); color: var(--text); }
+#slide-counter {
+  font-family: var(--f-mono); font-size: 11px;
+  color: var(--text3); min-width: 38px; text-align: center;
+}
+
+/* ── KEYBOARD HINT ── */
+#hint {
+  position: fixed; top: 1.5rem; right: 1.75rem;
+  font-size: 11px; color: var(--text3); font-family: var(--f-mono);
+  z-index: 1000;
+}
+
+/* ────────────────────────────────────────────
+   SLIDE LAYOUTS
+──────────────────────────────────────────── */
+
+/* shared helpers */
+.tag {
+  display: inline-block; font-size: 11px; font-weight: 500;
+  font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .1em;
+  padding: 4px 12px; border-radius: 20px;
+}
+.tag-v  { background: rgba(123,108,246,.18); color: var(--v2); border: 1px solid rgba(123,108,246,.3); }
+.tag-g  { background: rgba(31,255,168,.12); color: var(--g);  border: 1px solid rgba(31,255,168,.25); }
+.tag-a  { background: rgba(255,179,71,.12); color: var(--amber); border: 1px solid rgba(255,179,71,.25); }
+.tag-c  { background: rgba(255,107,107,.12); color: var(--coral); border: 1px solid rgba(255,107,107,.25); }
+
+.eyebrow {
+  font-family: var(--f-mono); font-size: 11px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .12em; margin-bottom: .75rem;
+}
+
+.display {
+  font-family: var(--f-disp); line-height: .95;
+  text-transform: uppercase;
+}
+
+.body-text { font-size: 15px; line-height: 1.75; color: var(--text2); }
+.body-text strong { color: var(--text); font-weight: 600; }
+
+/* ────────────────────────────────────────────
+   SLIDE 1 — COVER
+──────────────────────────────────────────── */
+#s1 {
+  background: var(--ink);
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 6rem 7rem;
+  position: relative;
+  overflow: hidden;
+}
+#s1 .bg-circle {
+  position: absolute; border-radius: 50%;
+  pointer-events: none;
+}
+#s1 .c1 {
+  width: 700px; height: 700px; right: -200px; top: -200px;
+  background: radial-gradient(circle, rgba(123,108,246,.18) 0%, transparent 65%);
+}
+#s1 .c2 {
+  width: 400px; height: 400px; left: 200px; bottom: -100px;
+  background: radial-gradient(circle, rgba(31,255,168,.08) 0%, transparent 65%);
+}
+#s1 .cover-tag {
+  font-family: var(--f-mono); font-size: 12px; color: var(--g);
+  border: 1px solid rgba(31,255,168,.3); background: rgba(31,255,168,.08);
+  padding: 5px 14px; border-radius: 20px;
+  margin-bottom: 2.5rem; display: inline-block;
+  animation: fadeUp .6s .1s both;
+}
+#s1 h1 {
+  font-size: clamp(5rem, 11vw, 9rem);
+  color: var(--text);
+  animation: fadeUp .6s .2s both;
+}
+#s1 h1 .accent { color: var(--v2); }
+#s1 .cover-sub {
+  font-size: clamp(1rem, 2vw, 1.4rem); color: var(--text2); font-weight: 300;
+  margin-top: 1.25rem; max-width: 500px; line-height: 1.6;
+  animation: fadeUp .6s .35s both;
+}
+#s1 .cover-meta {
+  margin-top: 3rem; display: flex; gap: 1.5rem; flex-wrap: wrap;
+  animation: fadeUp .6s .5s both;
+}
+#s1 .cover-meta span {
+  font-size: 13px; color: var(--text3); font-family: var(--f-mono);
+}
+#s1 .cover-meta span b { color: var(--text2); }
+#s1 .big-v {
+  position: absolute; right: 7rem; top: 50%; transform: translateY(-50%);
+  font-family: var(--f-disp); font-size: 28vw; color: rgba(123,108,246,.04);
+  line-height: 1; pointer-events: none; letter-spacing: -2px;
+  animation: fadeIn 1s .3s both;
+}
+
+/* ────────────────────────────────────────────
+   SLIDE 2 — PROBLEM
+──────────────────────────────────────────── */
+#s2 {
+  background: var(--ink);
+  flex-direction: column; justify-content: center;
+  padding: 5rem 7rem;
+  position: relative; overflow: hidden;
+}
+#s2::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--coral), transparent);
+}
+#s2 h2 { font-size: clamp(3.5rem, 7vw, 6rem); color: var(--text); margin-bottom: 3rem; }
+#s2 h2 .red { color: var(--coral); }
+.prob-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;
+}
+.prob-card {
+  background: var(--ink2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem;
+  position: relative; overflow: hidden;
+}
+.prob-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.prob-card:nth-child(1)::before { background: var(--coral); }
+.prob-card:nth-child(2)::before { background: var(--amber); }
+.prob-card:nth-child(3)::before { background: var(--v); }
+.prob-num {
+  font-family: var(--f-disp); font-size: 3.5rem; color: var(--border2);
+  line-height: 1; margin-bottom: .5rem;
+}
+.prob-num.red   { color: rgba(255,107,107,.25); }
+.prob-num.amber { color: rgba(255,179,71,.25); }
+.prob-num.violet{ color: rgba(123,108,246,.25); }
+.prob-title { font-size: 15px; font-weight: 600; margin-bottom: .5rem; }
+.prob-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* ────────────────────────────────────────────
+   SLIDE 3 — SOLUTION
+──────────────────────────────────────────── */
+#s3 {
+  background: var(--ink);
+  padding: 5rem 7rem;
+  flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+#s3::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--g), transparent);
+}
+#s3 h2 { font-size: clamp(3rem, 6vw, 5.5rem); margin-bottom: .5rem; }
+#s3 h2 .green { color: var(--g); }
+#s3 .sol-sub { font-size: 16px; color: var(--text2); margin-bottom: 2.5rem; max-width: 600px; }
+.sol-features {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+}
+.sol-feat {
+  background: var(--ink2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1rem; text-align: center;
+  transition: border-color .2s;
+}
+.sol-feat:hover { border-color: var(--v); }
+.sol-feat-icon { font-size: 26px; margin-bottom: .6rem; }
+.sol-feat-title { font-size: 13px; font-weight: 600; margin-bottom: .35rem; }
+.sol-feat-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.sol-statement {
+  margin-top: 2rem; background: rgba(31,255,168,.06);
+  border: 1px solid rgba(31,255,168,.2); border-radius: 14px;
+  padding: 1.25rem 1.75rem;
+  font-size: 15px; color: var(--text2); line-height: 1.7;
+}
+.sol-statement strong { color: var(--g2); }
+
+/* ────────────────────────────────────────────
+   SLIDE 4 — HOW IT WORKS
+──────────────────────────────────────────── */
+#s4 {
+  background: var(--ink);
+  padding: 5rem 7rem;
+  flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+#s4 h2 { font-size: clamp(3rem, 6vw, 5.5rem); margin-bottom: 2.5rem; }
+#s4 h2 .accent { color: var(--v2); }
+.flow-steps {
+  display: flex; align-items: flex-start; gap: 0;
+  position: relative;
+}
+.flow-steps::before {
+  content: '';
+  position: absolute; top: 28px; left: 28px; right: 28px; height: 1px;
+  background: linear-gradient(90deg, var(--v), var(--g));
+  z-index: 0;
+}
+.flow-step {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  text-align: center; position: relative; z-index: 1;
+}
+.flow-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--ink); border: 2px solid var(--v);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--f-disp); font-size: 1.4rem; color: var(--v2);
+  margin-bottom: 1rem; flex-shrink: 0;
+}
+.flow-step:last-child .flow-num { border-color: var(--g); color: var(--g); }
+.flow-step:nth-child(3) .flow-num { border-color: var(--amber); color: var(--amber); }
+.flow-title { font-size: 13px; font-weight: 600; margin-bottom: .35rem; }
+.flow-desc { font-size: 11px; color: var(--text2); line-height: 1.6; max-width: 140px; }
+.tech-row {
+  margin-top: 2.5rem; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.tech-pill {
+  background: var(--ink3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 7px 14px;
+  font-size: 12px; font-family: var(--f-mono); color: var(--text2);
+  display: flex; align-items: center; gap: 6px;
+}
+.tech-pill span { font-size: 14px; }
+
+/* ────────────────────────────────────────────
+   SLIDE 5 — IMPACT
+──────────────────────────────────────────── */
+#s5 {
+  background: var(--ink);
+  padding: 5rem 7rem;
+  flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+#s5::after {
+  content: 'IMPACT';
+  position: absolute; right: -2rem; bottom: -2rem;
+  font-family: var(--f-disp); font-size: 18vw;
+  color: rgba(31,255,168,.03); pointer-events: none; line-height: 1;
+}
+#s5 h2 { font-size: clamp(3rem, 6vw, 5.5rem); margin-bottom: 2.5rem; }
+#s5 h2 .green { color: var(--g); }
+.impact-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.impact-card {
+  background: var(--ink2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.5rem; text-align: center;
+}
+.impact-big {
+  font-family: var(--f-disp); font-size: 3.2rem; line-height: 1;
+  margin-bottom: .4rem;
+}
+.impact-label { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.judge-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+.judge-item {
+  background: var(--ink2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.judge-check {
+  width: 20px; height: 20px; border-radius: 50%; background: rgba(31,255,168,.15);
+  border: 1px solid rgba(31,255,168,.3); display: flex; align-items: center;
+  justify-content: center; font-size: 10px; color: var(--g); flex-shrink: 0; margin-top: 1px;
+}
+.judge-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.judge-text strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 13px; }
+
+/* ────────────────────────────────────────────
+   SLIDE 6 — DEMO
+──────────────────────────────────────────── */
+#s6 {
+  background: var(--ink);
+  padding: 5rem 7rem;
+  flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+#s6 h2 { font-size: clamp(3rem, 6vw, 5.5rem); margin-bottom: .5rem; }
+#s6 h2 .accent { color: var(--amber); }
+#s6 .demo-sub { font-size: 15px; color: var(--text2); margin-bottom: 2.5rem; }
+.demo-timeline {
+  display: flex; flex-direction: column; gap: 0;
+  position: relative;
+}
+.demo-timeline::before {
+  content: '';
+  position: absolute; left: 20px; top: 20px; bottom: 20px; width: 1px;
+  background: linear-gradient(180deg, var(--v), var(--g));
+}
+.demo-step {
+  display: flex; gap: 1.5rem; align-items: flex-start;
+  padding: .9rem 0 .9rem 3.5rem; position: relative;
+}
+.demo-step::before {
+  content: attr(data-time);
+  position: absolute; left: 0;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--ink3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--f-mono); font-size: 9px; color: var(--text3);
+  text-align: center; line-height: 1.2;
+}
+.demo-step-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.demo-step-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.demo-wow {
+  margin-top: 1.5rem; background: rgba(255,179,71,.07);
+  border: 1px solid rgba(255,179,71,.25); border-radius: 14px;
+  padding: 1.25rem 1.75rem;
+  font-size: 14px; color: var(--text2); line-height: 1.7;
+}
+.demo-wow strong { color: var(--amber); }
+
+/* ────────────────────────────────────────────
+   SLIDE 7 — CLOSING
+──────────────────────────────────────────── */
+#s7 {
+  background: var(--ink);
+  flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 5rem;
+  position: relative; overflow: hidden;
+}
+#s7 .glow1 {
+  position: absolute; width: 600px; height: 600px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(123,108,246,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+#s7 .glow2 {
+  position: absolute; width: 400px; height: 400px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(31,255,168,.07) 0%, transparent 55%);
+  pointer-events: none;
+}
+#s7 .close-tag {
+  font-family: var(--f-mono); font-size: 11px; color: var(--g);
+  border: 1px solid rgba(31,255,168,.3); background: rgba(31,255,168,.08);
+  padding: 5px 16px; border-radius: 20px; margin-bottom: 2rem;
+  display: inline-block;
+}
+#s7 h2 {
+  font-size: clamp(4rem, 9vw, 8rem);
+  line-height: .95; margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+}
+#s7 h2 .v { color: var(--v2); }
+#s7 h2 .g { color: var(--g); }
+#s7 .close-quote {
+  font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text2); font-weight: 300;
+  max-width: 600px; line-height: 1.7; margin-bottom: 3rem;
+  font-style: italic; position: relative; z-index: 1;
+}
+#s7 .close-meta {
+  display: flex; gap: 2rem; justify-content: center;
+  font-size: 12px; color: var(--text3); font-family: var(--f-mono);
+  position: relative; z-index: 1;
+}
+#s7 .close-meta b { color: var(--text2); display: block; margin-bottom: 2px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* staggered children of active slides */
+.slide.active .prob-card  { animation: fadeUp .5s both; }
+.slide.active .prob-card:nth-child(1) { animation-delay: .05s; }
+.slide.active .prob-card:nth-child(2) { animation-delay: .15s; }
+.slide.active .prob-card:nth-child(3) { animation-delay: .25s; }
+.slide.active .sol-feat   { animation: fadeUp .5s both; }
+.slide.active .sol-feat:nth-child(1) { animation-delay: .05s; }
+.slide.active .sol-feat:nth-child(2) { animation-delay: .12s; }
+.slide.active .sol-feat:nth-child(3) { animation-delay: .19s; }
+.slide.active .sol-feat:nth-child(4) { animation-delay: .26s; }
+.slide.active .sol-feat:nth-child(5) { animation-delay: .33s; }
+.slide.active .impact-card { animation: fadeUp .5s both; }
+.slide.active .impact-card:nth-child(1) { animation-delay: .05s; }
+.slide.active .impact-card:nth-child(2) { animation-delay: .13s; }
+.slide.active .impact-card:nth-child(3) { animation-delay: .21s; }
+.slide.active .impact-card:nth-child(4) { animation-delay: .29s; }
+.slide.active .demo-step  { animation: fadeUp .5s both; }
+.slide.active .demo-step:nth-child(1) { animation-delay: .1s; }
+.slide.active .demo-step:nth-child(2) { animation-delay: .2s; }
+.slide.active .demo-step:nth-child(3) { animation-delay: .3s; }
+.slide.active .demo-step:nth-child(4) { animation-delay: .4s; }
+.slide.active .demo-step:nth-child(5) { animation-delay: .5s; }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- SLIDE 1: COVER -->
+  <div class="slide active" id="s1">
+    <div class="bg-circle c1"></div>
+    <div class="bg-circle c2"></div>
+    <div class="big-v">V</div>
+    <span class="cover-tag">⚡ ElevateX 2026 · Season 2</span>
+    <h1 class="display">Vidya<span class="accent">AI</span></h1>
+    <p class="cover-sub">An adaptive AI tutor that explains any topic in your language — Telugu, Hindi, Tamil, or English — and gets smarter as you learn.</p>
+    <div class="cover-meta">
+      <span><b>Track</b> Education & Learning + Social Impact</span>
+      <span><b>Tech</b> React · Gemini 2.0 · Recharts</span>
+      <span><b>Date</b> May 17, 2026</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM -->
+  <div class="slide" id="s2">
+    <p class="eyebrow">01 — The Problem</p>
+    <h2 class="display">Education is<br/><span class="red">broken</span> for<br/>millions.</h2>
+    <div class="prob-grid">
+      <div class="prob-card">
+        <div class="prob-num red">250M</div>
+        <div class="prob-title">Students can't keep up</div>
+        <div class="prob-desc">250 million Indian students study in English — a language that isn't their mother tongue. Concepts don't stick.</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-num amber">1:40</div>
+        <div class="prob-title">No personal feedback</div>
+        <div class="prob-desc">The average teacher-to-student ratio is 1:40. No one can adapt their teaching to 40 different learning styles.</div>
+      </div>
+      <div class="prob-card">
+        <div class="prob-num violet">60%</div>
+        <div class="prob-title">Rural students left behind</div>
+        <div class="prob-desc">Over 60% of rural students in AP & Telangana drop out or underperform due to language and comprehension barriers.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: SOLUTION -->
+  <div class="slide" id="s3">
+    <p class="eyebrow">02 — Our Solution</p>
+    <h2 class="display">Meet <span class="green">VidyaAI</span></h2>
+    <p class="sol-sub">A personal AI tutor for every student — adapts to your level, speaks your language, shows you exactly what you don't know.</p>
+    <div class="sol-features">
+      <div class="sol-feat">
+        <div class="sol-feat-icon">🧠</div>
+        <div class="sol-feat-title">Adaptive Explanation</div>
+        <div class="sol-feat-desc">5 learning styles × 3 difficulty levels, generated in real-time</div>
+      </div>
+      <div class="sol-feat">
+        <div class="sol-feat-icon">🎯</div>
+        <div class="sol-feat-title">Adaptive Quiz</div>
+        <div class="sol-feat-desc">Difficulty auto-scales — gets harder when you're winning</div>
+      </div>
+      <div class="sol-feat">
+        <div class="sol-feat-icon">📊</div>
+        <div class="sol-feat-title">Knowledge Heatmap</div>
+        <div class="sol-feat-desc">Visual radar of strong vs weak topics — always know what to focus on</div>
+      </div>
+      <div class="sol-feat">
+        <div class="sol-feat-icon">🌐</div>
+        <div class="sol-feat-title">Regional Language</div>
+        <div class="sol-feat-desc">Translate & simplify any content into Telugu, Hindi, or Tamil</div>
+      </div>
+      <div class="sol-feat">
+        <div class="sol-feat-icon">✨</div>
+        <div class="sol-feat-title">AI Insights</div>
+        <div class="sol-feat-desc">Personalized feedback on your learning profile in your language</div>
+      </div>
+    </div>
+    <div class="sol-statement">
+      One student. One subject. One language preference. <strong>VidyaAI builds a completely different learning experience for each of them — automatically.</strong>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: HOW IT WORKS -->
+  <div class="slide" id="s4">
+    <p class="eyebrow">03 — How It Works</p>
+    <h2 class="display">Built on <span class="accent">Gemini</span><br/>2.0 Flash</h2>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-title">Student setup</div>
+        <div class="flow-desc">Enter name, subject, language preference, Gemini API key</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-title">Pick a topic</div>
+        <div class="flow-desc">Type any topic or choose from 8 AI-suggested subtopics</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-title">AI explains</div>
+        <div class="flow-desc">Gemini generates explanation in chosen language + style</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-title">Quiz adapts</div>
+        <div class="flow-desc">MCQs scale difficulty based on your streak performance</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-title">Map updates</div>
+        <div class="flow-desc">Heatmap + insights refresh with every interaction</div>
+      </div>
+    </div>
+    <div class="tech-row">
+      <div class="tech-pill"><span>⚛️</span> React 18 + Vite</div>
+      <div class="tech-pill"><span>🤖</span> Gemini 2.0 Flash</div>
+      <div class="tech-pill"><span>📈</span> Recharts RadarChart</div>
+      <div class="tech-pill"><span>🎨</span> Sora + JetBrains Mono</div>
+      <div class="tech-pill"><span>🌐</span> Browser-native, no backend</div>
+      <div class="tech-pill"><span>⚡</span> 1,600+ lines of code</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: IMPACT -->
+  <div class="slide" id="s5">
+    <p class="eyebrow">04 — Impact & Judging</p>
+    <h2 class="display">Built for <span class="green">real</span><br/>impact</h2>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-big" style="color:var(--v2)">250M+</div>
+        <div class="impact-label">Indian students who could benefit from regional-language AI tutoring</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-big" style="color:var(--g)">4</div>
+        <div class="impact-label">Indian languages supported out of the box — English, Telugu, Hindi, Tamil</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-big" style="color:var(--amber)">5</div>
+        <div class="impact-label">Distinct AI-powered features — all working, all demoed today</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-big" style="color:var(--coral)">0</div>
+        <div class="impact-label">Backend servers needed — fully browser-based, deploy anywhere free</div>
+      </div>
+    </div>
+    <div class="judge-grid">
+      <div class="judge-item">
+        <div class="judge-check">✓</div>
+        <div class="judge-text"><strong>Innovation & Originality</strong>No existing tool combines adaptive learning + regional AI language at once</div>
+      </div>
+      <div class="judge-item">
+        <div class="judge-check">✓</div>
+        <div class="judge-text"><strong>Problem Understanding</strong>Rooted in India's real education access gap — AP/Telangana specific</div>
+      </div>
+      <div class="judge-item">
+        <div class="judge-check">✓</div>
+        <div class="judge-text"><strong>Technical Feasibility</strong>Live and working — `npm run build` succeeds in under 7 seconds</div>
+      </div>
+      <div class="judge-item">
+        <div class="judge-check">✓</div>
+        <div class="judge-text"><strong>Solution Effectiveness</strong>Full demo loop: topic → explain → quiz → heatmap → insight</div>
+      </div>
+      <div class="judge-item">
+        <div class="judge-check">✓</div>
+        <div class="judge-text"><strong>Impact & Scalability</strong>Static SPA — deploy free on Vercel, scales to millions with zero infra</div>
+      </div>
+      <div class="judge-item">
+        <div class="judge-check">✓</div>
+        <div class="judge-text"><strong>Presentation Quality</strong>Dark UI, radar chart, live difficulty badge — visually striking demo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: DEMO -->
+  <div class="slide" id="s6">
+    <p class="eyebrow">05 — Demo Script</p>
+    <h2 class="display">5-minute <span class="accent">live</span><br/>demo</h2>
+    <p class="demo-sub">Here's exactly what we show on stage — every step is live, no slides, no mockups.</p>
+    <div class="demo-timeline">
+      <div class="demo-step" data-time="0:00">
+        <div>
+          <div class="demo-step-title">Setup screen</div>
+          <div class="demo-step-desc">Enter name "Ravi", subject "Physics", language "Telugu" → Start Learning</div>
+        </div>
+      </div>
+      <div class="demo-step" data-time="0:30">
+        <div>
+          <div class="demo-step-title">Learn tab — Explain in Telugu</div>
+          <div class="demo-step-desc">Type "Photosynthesis" → Style: Simple → Beginner → Watch Telugu explanation generate live</div>
+        </div>
+      </div>
+      <div class="demo-step" data-time="1:30">
+        <div>
+          <div class="demo-step-title">Quiz tab — Adaptive difficulty</div>
+          <div class="demo-step-desc">Start quiz → answer 2 correct → difficulty badge flips Easy → Medium → answer wrong → drops back</div>
+        </div>
+      </div>
+      <div class="demo-step" data-time="3:00">
+        <div>
+          <div class="demo-step-title">Heatmap tab — Knowledge radar</div>
+          <div class="demo-step-desc">Show radar chart populating with topic scores — color grid of strong/medium/weak</div>
+        </div>
+      </div>
+      <div class="demo-step" data-time="4:00">
+        <div>
+          <div class="demo-step-title">Translate → Insights</div>
+          <div class="demo-step-desc">Paste Newton's Law → translate to Telugu → switch to Insights → generate AI feedback in Telugu</div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-wow">
+      <strong>The wow moment:</strong> An English textbook paragraph becomes a simplified Telugu explanation + a Telugu quiz question + a Telugu performance insight — all within 60 seconds, on stage, live.
+    </div>
+  </div>
+
+  <!-- SLIDE 7: CLOSE -->
+  <div class="slide" id="s7">
+    <div class="glow1"></div>
+    <div class="glow2"></div>
+    <span class="close-tag">Learn · Share · Uplift</span>
+    <h2 class="display">Any student.<br/><span class="v">Any topic.</span><br/><span class="g">Any language.</span></h2>
+    <p class="close-quote">"VidyaAI doesn't just teach — it listens. It adjusts. It speaks your language. That's what education should have always been."</p>
+    <div class="close-meta">
+      <div><b>Project</b> VidyaAI</div>
+      <div><b>Hackathon</b> ElevateX 2026</div>
+      <div><b>Track</b> Education + Social Impact</div>
+      <div><b>Powered by</b> Google Gemini 2.0</div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nav-btn" onclick="prevSlide()">← Prev</button>
+  <div id="dots"></div>
+  <span id="slide-counter">1 / 7</span>
+  <button class="nav-btn" onclick="nextSlide()">Next →</button>
+</div>
+
+<div id="hint">← → arrow keys to navigate</div>
+
+<script>
+const slides = document.querySelectorAll('.slide')
+const dotsEl = document.getElementById('dots')
+const counter = document.getElementById('slide-counter')
+let current = 0
+
+// Build dots
+slides.forEach((_, i) => {
+  const d = document.createElement('div')
+  d.className = 'dot' + (i === 0 ? ' active' : '')
+  d.onclick = () => goTo(i)
+  dotsEl.appendChild(d)
+})
+
+function goTo(n) {
+  const prev = current
+  if (n === prev) return
+  slides[prev].classList.remove('active')
+  slides[prev].classList.add('exit')
+  setTimeout(() => slides[prev].classList.remove('exit'), 600)
+
+  current = (n + slides.length) % slides.length
+  slides[current].classList.add('active')
+
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i === current)
+  })
+  counter.textContent = `${current + 1} / ${slides.length}`
+}
+
+function nextSlide() { goTo(current + 1) }
+function prevSlide() { goTo(current - 1) }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide() }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prevSlide() }
+})
+
+// Touch swipe
+let tx = 0
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX })
+document.addEventListener('touchend',   e => {
+  const dx = tx - e.changedTouches[0].clientX
+  if (Math.abs(dx) > 50) dx > 0 ? nextSlide() : prevSlide()
+})
+</script>
+</body>
+</html>

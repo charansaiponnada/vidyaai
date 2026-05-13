@@ -106,7 +106,7 @@ export default function SetupScreen({ onStart, errorOverride }) {
           />
           <p style={styles.hint}>
             Get a free key at{' '}
-            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{ color: 'var(--purple-bright)' }}>
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{ color: 'var(--teal-bright)' }}>
               aistudio.google.com
             </a>
           </p>
@@ -126,7 +126,7 @@ export default function SetupScreen({ onStart, errorOverride }) {
                 }}
               >
                 <span style={{ fontSize: 17, fontWeight: 700 }}>{l.native}</span>
-                <span style={{ fontSize: 11, color: language === l.code ? 'var(--purple-bright)' : 'var(--text-muted)', marginTop: 2 }}>{l.label}</span>
+                <span style={{ fontSize: 11, color: language === l.code ? 'var(--teal-bright)' : 'var(--text-muted)', marginTop: 2 }}>{l.label}</span>
               </motion.button>
             ))}
           </div>
@@ -202,7 +202,7 @@ const styles = {
   glow: {
     position: 'fixed', top: -300, left: '50%', transform: 'translateX(-50%)',
     width: 1000, height: 1000,
-    background: 'radial-gradient(ellipse, rgba(124,110,247,0.12) 0%, transparent 70%)',
+    background: 'radial-gradient(ellipse, rgba(13,148,136,0.12) 0%, transparent 70%)',
     pointerEvents: 'none',
   },
   badge: {
@@ -247,14 +247,14 @@ const styles = {
     cursor: 'pointer', transition: 'all 0.2s',
   },
   langBtnActive: {
-    borderColor: 'var(--purple)', background: 'var(--purple-muted)',
-    color: 'var(--purple-bright)',
+    borderColor: 'var(--teal)', background: 'var(--teal-muted)',
+    color: 'var(--teal-bright)',
   },
   startBtn: {
-    width: '100%', padding: '15px', background: 'var(--purple)',
+    width: '100%', padding: '15px', background: 'var(--teal)',
     border: 'none', borderRadius: 'var(--radius-md)',
     fontSize: 16, fontWeight: 700, color: '#fff',
-    boxShadow: '0 4px 20px rgba(124,110,247,0.3)',
+    boxShadow: '0 4px 20px rgba(13,148,136,0.3)',
     marginTop: 10,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
@@ -275,7 +275,7 @@ const styles = {
   featIcon: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     width: 26, height: 26, borderRadius: 7,
-    background: 'var(--purple-muted)', color: 'var(--purple-bright)',
+    background: 'var(--teal-muted)', color: 'var(--teal-bright)',
     fontSize: 11, fontWeight: 800,
     flexShrink: 0,
   },

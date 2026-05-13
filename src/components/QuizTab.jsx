@@ -110,7 +110,7 @@ export default function QuizTab({ config, roadmap, learnedTopics, onAnswer }) {
           <StatPill label="Questions" value={history.length} />
           <StatPill label="Correct" value={correctCount} color="var(--teal)" />
           <StatPill label="Accuracy" value={`${acc}%`} color={acc >= 70 ? 'var(--teal)' : acc >= 40 ? 'var(--amber)' : 'var(--coral)'} />
-          <StatPill label="Streak" value={streak} color="var(--purple-bright)" />
+          <StatPill label="Streak" value={streak} color="var(--teal-bright)" />
           <div style={{ ...s.diffBadge, background: DIFF_CONFIG[difficulty].bg, color: DIFF_CONFIG[difficulty].color }}>
             {DIFF_CONFIG[difficulty].label.toUpperCase()}
           </div>
@@ -123,7 +123,7 @@ export default function QuizTab({ config, roadmap, learnedTopics, onAnswer }) {
           animate={{ opacity: 1 }}
           style={s.adaptHint}
         >
-          <span style={{ color: 'var(--purple-bright)', fontWeight: 700 }}>Adaptive mode</span>
+          <span style={{ color: 'var(--teal-bright)', fontWeight: 700 }}>Adaptive mode</span>
           {' \u2014 '}{streak >= 2 ? `Streak ${streak} \u2014 increasing difficulty` : streak === 0 && history.length > 1 ? 'Adjusting to easier questions' : 'Tracking your performance'}
         </motion.div>
       )}
@@ -262,7 +262,7 @@ const s = {
     background: 'var(--bg-elevated)',
   },
   startBtn: {
-    background: 'var(--purple)', border: 'none', borderRadius: 'var(--radius-md)',
+    background: 'var(--teal)', border: 'none', borderRadius: 'var(--radius-md)',
     padding: '12px 24px', color: '#fff', fontSize: 14, fontWeight: 700,
     display: 'flex', alignItems: 'center', gap: 8, boxShadow: 'var(--shadow-sm)',
   },
@@ -316,7 +316,7 @@ const s = {
     marginBottom: '2rem', overflow: 'hidden',
   },
   nextBtn: {
-    width: '100%', padding: 15, background: 'var(--purple)', border: 'none',
+    width: '100%', padding: 15, background: 'var(--teal)', border: 'none',
     borderRadius: 'var(--radius-md)', color: '#fff', fontSize: 15, fontWeight: 700,
     boxShadow: 'var(--shadow-md)',
   },
@@ -328,7 +328,7 @@ const s = {
   emptyIcon: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     width: 56, height: 56, borderRadius: 16,
-    background: 'var(--purple-muted)', color: 'var(--purple-bright)',
+    background: 'var(--teal-muted)', color: 'var(--teal-bright)',
     fontSize: 24, fontWeight: 800,
     marginBottom: 20,
   },

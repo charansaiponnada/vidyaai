@@ -79,7 +79,7 @@ export default function TranslateTab({ config }) {
         {SAMPLE_TEXTS.map((t, i) => (
           <motion.button
             key={i}
-            whileHover={{ scale: 1.05, borderColor: 'var(--purple)' }}
+            whileHover={{ scale: 1.05, borderColor: 'var(--teal)' }}
             style={s.sampleBtn}
             onClick={() => setInput(t)}
           >
@@ -241,7 +241,7 @@ const s = {
   },
   middleCol: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
   translateBtn: {
-    background: 'var(--purple)', border: 'none', borderRadius: 'var(--radius-md)',
+    background: 'var(--teal)', border: 'none', borderRadius: 'var(--radius-md)',
     padding: '16px', color: '#fff', fontSize: 14, fontWeight: 700,
     lineHeight: 1.5, textAlign: 'center', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -266,9 +266,9 @@ const s = {
     marginBottom: '1rem',
   },
   infoCard: {
-    background: 'var(--purple-muted)', border: '1px solid var(--border-accent)',
+    background: 'var(--teal-muted)', border: '1px solid var(--border-accent)',
     borderRadius: 'var(--radius-md)', padding: '1.5rem 2rem',
   },
-  infoTitle: { fontSize: 15, fontWeight: 800, color: 'var(--purple-bright)', marginBottom: 8 },
+  infoTitle: { fontSize: 15, fontWeight: 800, color: 'var(--teal-bright)', marginBottom: 8 },
   infoText: { fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.75 },
 }

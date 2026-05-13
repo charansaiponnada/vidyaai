@@ -170,7 +170,7 @@ export default function App() {
 
       {config && (
         <motion.button
-          whileHover={{ scale: 1.05, boxShadow: '0 0 32px rgba(124,110,247,0.35)' }}
+          whileHover={{ scale: 1.05, boxShadow: '0 0 32px rgba(13,148,136,0.35)' }}
           whileTap={{ scale: 0.95 }}
           style={styles.floatingBtn}
           onClick={() => setIsSimp(!isSimplifierOpen)}
@@ -227,7 +227,7 @@ const styles = {
   },
   spinnerLg: {
     width: 56, height: 56, border: '3px solid var(--border)',
-    borderTopColor: 'var(--purple)', borderRadius: '50%',
+    borderTopColor: 'var(--teal)', borderRadius: '50%',
   },
   nav: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -249,9 +249,9 @@ const styles = {
     fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500,
   },
   pitchBtn: {
-    background: 'var(--purple-muted)', border: '1px solid var(--border-accent)',
+    background: 'var(--teal-muted)', border: '1px solid var(--border-accent)',
     padding: '5px 14px', borderRadius: 'var(--radius-full)',
-    fontSize: 12, color: 'var(--purple-bright)',
+    fontSize: 12, color: 'var(--teal-bright)',
     textDecoration: 'none', fontWeight: 600,
   },
   resetBtn: {
@@ -275,7 +275,7 @@ const styles = {
     display: 'flex', alignItems: 'center', gap: 8,
   },
   tabBtnActive: {
-    color: 'var(--purple-bright)', background: 'var(--purple-muted)',
+    color: 'var(--teal-bright)', background: 'var(--teal-muted)',
     fontWeight: 600,
   },
   tabIcon: {
@@ -287,17 +287,17 @@ const styles = {
   tabLabel: {},
   tabUnderline: {
     position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)',
-    width: 16, height: 2, background: 'var(--purple)',
+    width: 16, height: 2, background: 'var(--teal)',
     borderRadius: 2,
   },
   main: { flex: 1, overflow: 'auto' },
   content: { maxWidth: 1040, margin: '0 auto', padding: '2rem 2rem 4rem' },
   floatingBtn: {
     position: 'fixed', bottom: 36, right: 36,
-    background: 'var(--purple)', color: '#fff', border: 'none',
+    background: 'var(--teal)', color: '#fff', border: 'none',
     borderRadius: 'var(--radius-full)', padding: '12px 24px',
     display: 'flex', alignItems: 'center', gap: 10,
-    boxShadow: '0 8px 32px rgba(124,110,247,0.3)',
+    boxShadow: '0 8px 32px rgba(13,148,136,0.3)',
     cursor: 'pointer', zIndex: 1000,
   },
   floatingBtnIcon: {

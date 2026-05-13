@@ -84,7 +84,7 @@ export default function InsightsTab({ config, quizHistory, learnedTopics }) {
         animate="show"
         style={s.summaryGrid}
       >
-        <MetricCard label="Topics Learned" value={learnedTopics.length} color="var(--purple-bright)" />
+        <MetricCard label="Topics Learned" value={learnedTopics.length} color="var(--teal-bright)" />
         <MetricCard label="Quizzes Taken"  value={total}               color="var(--blue)"    />
         <MetricCard label="Accuracy" value={acc + '%'} color={acc >= 70 ? 'var(--teal)' : acc >= 40 ? 'var(--amber)' : 'var(--coral)'} />
         <MetricCard label="Correct" value={correct} color="var(--teal)" />
@@ -221,7 +221,7 @@ const s = {
   emptyIcon: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     width: 56, height: 56, borderRadius: 16,
-    background: 'var(--purple-muted)', color: 'var(--purple-bright)',
+    background: 'var(--teal-muted)', color: 'var(--teal-bright)',
     fontSize: 24, fontWeight: 800,
     marginBottom: 20,
   },
@@ -232,7 +232,7 @@ const s = {
     display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
   },
   styleCard: {
-    background: 'var(--purple-muted)',
+    background: 'var(--teal-muted)',
     border: '1px solid var(--border-accent)',
     borderRadius: 'var(--radius-lg)',
     padding: '1.5rem 2rem',
@@ -258,7 +258,7 @@ const s = {
   perfBarBg: { height: 8, background: 'var(--bg-secondary)', borderRadius: 4, overflow: 'hidden' },
   perfBarFill: { height: '100%', borderRadius: 4 },
   perfPct: { fontSize: 13, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', textAlign: 'right', fontWeight: 700 },
-  genBtn: { background: 'var(--purple)', border: 'none', borderRadius: 'var(--radius-md)', padding: '10px 20px', color: '#fff', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, boxShadow: 'var(--shadow-sm)' },
+  genBtn: { background: 'var(--teal)', border: 'none', borderRadius: 'var(--radius-md)', padding: '10px 20px', color: '#fff', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, boxShadow: 'var(--shadow-sm)' },
   insightCard: { background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', padding: '1.5rem 2rem' },
   insightPlaceholder: { fontSize: 14, color: 'var(--text-muted)', fontStyle: 'italic', padding: '2.5rem', textAlign: 'center', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' },
   errorBox: { background: 'var(--coral-muted)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 'var(--radius-md)', padding: '14px 20px', fontSize: 14, color: 'var(--coral)', marginBottom: '1rem' },

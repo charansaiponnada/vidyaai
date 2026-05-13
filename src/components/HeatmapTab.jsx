@@ -83,7 +83,7 @@ export default function HeatmapTab({ learnedTopics, quizHistory }) {
         animate="show"
         style={s.summaryRow}
       >
-        <SummaryCard label="Topics Explored" value={topicStats.length} color="var(--purple-bright)" />
+        <SummaryCard label="Topics Explored" value={topicStats.length} color="var(--teal-bright)" />
         <SummaryCard label="Strong" value={strong} color="var(--teal)" />
         <SummaryCard label="Needs Work" value={medium} color="var(--amber)" />
         <SummaryCard label="Weak" value={weak} color="var(--coral)" />
@@ -122,11 +122,11 @@ export default function HeatmapTab({ learnedTopics, quizHistory }) {
                 <RadarChart data={radarData}>
                   <PolarGrid stroke="var(--border)" />
                   <PolarAngleAxis dataKey="topic" tick={{ fill: 'var(--text-secondary)', fontSize: 11, fontWeight: 600 }} />
-                  <Radar name="Score" dataKey="score" stroke="var(--purple)" fill="var(--purple)" fillOpacity={0.15} strokeWidth={2} />
+                  <Radar name="Score" dataKey="score" stroke="var(--teal)" fill="var(--teal)" fillOpacity={0.15} strokeWidth={2} />
                   <Tooltip
                     contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 12, fontSize: 12, boxShadow: 'var(--shadow-md)' }}
                     itemStyle={{ color: 'var(--text-primary)' }}
-                    labelStyle={{ color: 'var(--purple-bright)', fontWeight: 700, marginBottom: 4 }}
+                    labelStyle={{ color: 'var(--teal-bright)', fontWeight: 700, marginBottom: 4 }}
                     formatter={v => [`${v}%`, 'Strength']}
                   />
                 </RadarChart>
@@ -197,7 +197,7 @@ const s = {
   emptyIcon: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     width: 56, height: 56, borderRadius: 16,
-    background: 'var(--purple-muted)', color: 'var(--purple-bright)',
+    background: 'var(--teal-muted)', color: 'var(--teal-bright)',
     fontSize: 24, fontWeight: 800,
     marginBottom: 20,
   },

@@ -7,8 +7,8 @@
 ---
 
 **Project:** VidyaAI
-**Generated:** 2026-05-13 19:58:01
-**Category:** Educational App
+**Generated:** 2026-05-13 20:21:09
+**Category:** Online Course/E-learning
 
 ---
 
@@ -18,13 +18,13 @@
 
 | Role | Hex | CSS Variable |
 |------|-----|--------------|
-| Primary | `#4F46E5` | `--color-primary` |
-| Secondary | `#818CF8` | `--color-secondary` |
-| CTA/Accent | `#22C55E` | `--color-cta` |
-| Background | `#EEF2FF` | `--color-background` |
-| Text | `#312E81` | `--color-text` |
+| Primary | `#0D9488` | `--color-primary` |
+| Secondary | `#2DD4BF` | `--color-secondary` |
+| CTA/Accent | `#F97316` | `--color-cta` |
+| Background | `#F0FDFA` | `--color-background` |
+| Text | `#134E4A` | `--color-text` |
 
-**Color Notes:** Learning indigo + progress green
+**Color Notes:** Progress teal + achievement orange
 
 ### Typography
 
@@ -68,7 +68,7 @@
 ```css
 /* Primary Button */
 .btn-primary {
-  background: #22C55E;
+  background: #F97316;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -85,8 +85,8 @@
 /* Secondary Button */
 .btn-secondary {
   background: transparent;
-  color: #4F46E5;
-  border: 2px solid #4F46E5;
+  color: #0D9488;
+  border: 2px solid #0D9488;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -99,7 +99,7 @@
 
 ```css
 .card {
-  background: #EEF2FF;
+  background: #F0FDFA;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -125,9 +125,9 @@
 }
 
 .input:focus {
-  border-color: #4F46E5;
+  border-color: #0D9488;
   outline: none;
-  box-shadow: 0 0 0 3px #4F46E520;
+  box-shadow: 0 0 0 3px #0D948820;
 }
 ```
 
@@ -173,8 +173,8 @@
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ Dark modes
-- ❌ Complex jargon
+- ❌ Boring design
+- ❌ No gamification
 
 ### Additional Forbidden Patterns
 

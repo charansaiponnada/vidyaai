@@ -108,7 +108,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
                   <motion.button
                     key={node.id}
                     variants={item}
-                    whileHover={{ y: -4, borderColor: 'var(--purple)', backgroundColor: 'var(--bg-card-hover)' }}
+                    whileHover={{ y: -4, borderColor: 'var(--teal)', backgroundColor: 'var(--bg-card-hover)' }}
                     whileTap={{ scale: 0.98 }}
                     style={{ ...s.nodeCard, borderColor: status ? statusColor : 'var(--border)' }}
                     onClick={() => { setTopic(node.label); handleLearn(node.label) }}
@@ -215,7 +215,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
                   })}
                 </div>
                 <motion.button
-                  whileHover={{ scale: 1.02, borderColor: 'var(--purple)' }}
+                  whileHover={{ scale: 1.02, borderColor: 'var(--teal)' }}
                   whileTap={{ scale: 0.98 }}
                   style={s.reloadBtn}
                   onClick={() => handleLearn(currentTopic)}
@@ -247,7 +247,7 @@ const s = {
   nodeNum: {
     width: 34, height: 34, borderRadius: '50%', background: 'var(--bg-elevated)',
     border: '1px solid var(--border)', display: 'flex', alignItems: 'center',
-    justifyContent: 'center', fontSize: 14, fontWeight: 800, color: 'var(--purple-bright)',
+    justifyContent: 'center', fontSize: 14, fontWeight: 800, color: 'var(--teal-bright)',
     flexShrink: 0,
   },
   nodeContent: { flex: 1 },
@@ -268,8 +268,8 @@ const s = {
     transition: 'all 0.2s', fontWeight: 500,
   },
   chipActive: {
-    background: 'var(--purple-muted)', borderColor: 'var(--purple)',
-    color: 'var(--purple-bright)', fontWeight: 600,
+    background: 'var(--teal-muted)', borderColor: 'var(--teal)',
+    color: 'var(--teal-bright)', fontWeight: 600,
   },
   backBtn: {
     background: 'var(--bg-elevated)', border: '1px solid var(--border)',
@@ -302,9 +302,9 @@ const s = {
     fontSize: 16, lineHeight: 1.85, color: 'var(--text-primary)',
   },
   keyInsight: {
-    background: 'var(--purple-muted)', border: '1px solid var(--border-accent)',
+    background: 'var(--teal-muted)', border: '1px solid var(--border-accent)',
     borderRadius: 'var(--radius-md)', padding: '16px 24px', fontSize: 15,
-    color: 'var(--purple-bright)', marginTop: 20, fontWeight: 600,
+    color: 'var(--teal-bright)', marginTop: 20, fontWeight: 600,
     boxShadow: 'var(--shadow-glow)',
   },
   reloadBtn: {

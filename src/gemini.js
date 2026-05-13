@@ -1,10 +1,38 @@
-// Use 2.5-flash as default as requested by the user
 const DEFAULT_MODEL = 'gemini-2.5-flash'
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
-async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAULT_MODEL) {
+// Rate limiter: max 50 requests per 60s (under free tier 60 RPM limit)
+const RATE_LIMIT_WINDOW = 60000
+const MAX_REQUESTS = 50
+const requestTimes = []
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function acquireSlot() {
+  const now = Date.now()
+  while (requestTimes.length > 0 && requestTimes[0] < now - RATE_LIMIT_WINDOW) {
+    requestTimes.shift()
+  }
+  if (requestTimes.length >= MAX_REQUESTS) {
+    const oldest = requestTimes[0]
+    const waitTime = oldest + RATE_LIMIT_WINDOW - now + 100
+    console.log(`[VidyaAI] Rate limit: ${requestTimes.length} requests in window. Waiting ${Math.round(waitTime)}ms...`)
+    await wait(waitTime)
+  }
+  requestTimes.push(Date.now())
+}
+
+async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAULT_MODEL, retries = 2) {
+  const feature = new Error().stack.split('\n')[3]?.trim().split(' ')[1] || 'unknown'
+  const promptPreview = prompt.substring(0, 60).replace(/\n/g, ' ')
+  console.log(`[VidyaAI] >> ${model} | ${feature} | "${promptPreview}..."`)
+
+  await acquireSlot()
+
   const url = `${BASE_URL}${model}:generateContent?key=${apiKey}`
-  
+
   const body = {
     contents: [{ parts: [{ text: prompt }] }],
     generationConfig: {
@@ -12,32 +40,57 @@ async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAUL
       maxOutputTokens: 1500,
     },
   }
-  
+
   if (systemInstruction) {
     body.system_instruction = { parts: [{ text: systemInstruction }] }
   }
 
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const start = Date.now()
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
 
-    if (res.status === 429) {
-      throw new Error('API Rate Limit Exceeded (429). The Gemini free tier has limits. If you see "limit: 0", please ensure the Gemini API is enabled in your Google AI Studio project.')
+      const elapsed = Date.now() - start
+
+      if (res.status === 429) {
+        console.warn(`[VidyaAI] 429 Rate limited (${elapsed}ms). Attempt ${attempt + 1}/${retries + 1}`)
+        if (attempt < retries) {
+          const backoff = Math.min(1000 * Math.pow(2, attempt), 8000)
+          console.log(`[VidyaAI] Retrying in ${backoff}ms...`)
+          await wait(backoff)
+          continue
+        }
+        throw new Error('Rate limit hit. Wait a moment and try again. The free Gemini tier allows ~60 requests per minute.')
+      }
+
+      if (!res.ok) {
+        const err = await res.json()
+        console.error(`[VidyaAI] API error ${res.status} (${elapsed}ms):`, err?.error?.message)
+        throw new Error(err?.error?.message || `Gemini API error (${res.status})`)
+      }
+
+      const data = await res.json()
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+      const tokens = data.usageMetadata?.totalTokenCount || '?'
+      console.log(`[VidyaAI] << OK (${elapsed}ms, ~${tokens} tokens)`)
+      return text
+    } catch (error) {
+      const elapsed = Date.now() - start
+      if (error.message.includes('429') || error.message.includes('rate limit') || error.message.includes('RESOURCE_EXHAUSTED')) {
+        if (attempt < retries) {
+          const backoff = Math.min(1000 * Math.pow(2, attempt), 8000)
+          console.warn(`[VidyaAI] Rate limited (${elapsed}ms). Retry ${attempt + 1}/${retries} in ${backoff}ms`)
+          await wait(backoff)
+          continue
+        }
+      }
+      console.error(`[VidyaAI] FAILED (${elapsed}ms):`, error.message)
+      if (attempt === retries) throw error
     }
-
-    if (!res.ok) {
-      const err = await res.json()
-      throw new Error(err?.error?.message || `Gemini API error (${res.status})`)
-    }
-
-    const data = await res.json()
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
-  } catch (error) {
-    console.error('Gemini Call Failed:', error)
-    throw error
   }
 }
 

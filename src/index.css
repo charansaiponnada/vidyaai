@@ -1,38 +1,48 @@
 :root {
-  /* Background */
-  --bg: #f0fdfa;
-  --bg-secondary: #e6f7f2;
-  --bg-elevated: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f5fffb;
+  /* Brand Constants */
+  --brand-hue: 260;
+  
+  /* Fallbacks for older browsers */
+  --bg: #07070f;
+  --text-primary: #e4e4f0;
+  --text-secondary: #8888a8;
+  --teal: #2dd4a0;
+  --purple: #7c6ef7;
+
+  /* Backgrounds */
+  --bg: oklch(12% 0.02 var(--brand-hue));
+  --bg-secondary: oklch(16% 0.03 var(--brand-hue));
+  --bg-elevated: oklch(20% 0.04 var(--brand-hue));
+  --bg-card: oklch(18% 0.03 var(--brand-hue));
+  --bg-card-hover: oklch(22% 0.05 var(--brand-hue));
 
   /* Borders */
-  --border: rgba(0, 0, 0, 0.06);
-  --border-bright: rgba(0, 0, 0, 0.12);
-  --border-accent: rgba(13, 148, 136, 0.2);
+  --border: oklch(30% 0.03 var(--brand-hue) / 0.4);
+  --border-bright: oklch(40% 0.04 var(--brand-hue) / 0.5);
+  --border-accent: oklch(60% 0.15 270 / 0.3);
 
-  /* Brand — Teal + Orange */
-  --teal: #0d9488;
-  --teal-bright: #14b8a6;
-  --teal-muted: rgba(13, 148, 136, 0.08);
-  --orange: #f97316;
-  --orange-bright: #fb923c;
-  --orange-muted: rgba(249, 115, 22, 0.08);
+  /* Accents */
+  --purple: oklch(65% 0.2 270); 
+  --purple-muted: oklch(65% 0.2 270 / 0.1);
+  --purple-bright: oklch(75% 0.25 270);
 
-  /* Semantic */
-  --success: #16a34a;
-  --success-muted: rgba(22, 163, 74, 0.08);
-  --amber: #d97706;
-  --amber-muted: rgba(217, 119, 6, 0.08);
-  --coral: #dc2626;
-  --coral-muted: rgba(220, 38, 38, 0.08);
-  --blue: #0284c7;
-  --blue-muted: rgba(2, 132, 199, 0.08);
+  --teal: oklch(75% 0.15 170);   
+  --teal-muted: oklch(75% 0.15 170 / 0.1);
+  --teal-bright: oklch(85% 0.2 170);
 
+  --amber: oklch(75% 0.18 80);   
+  --amber-muted: oklch(75% 0.18 80 / 0.1);
+  --amber-bright: oklch(85% 0.22 80);
+
+  --coral: oklch(65% 0.18 20);   
+  --coral-muted: oklch(65% 0.18 20 / 0.1);
+  --coral-bright: oklch(75% 0.22 20);
+  
   /* Text */
-  --text-primary: #134e4a;
-  --text-secondary: #5b8b85;
-  --text-muted: #94a3b8;
+  --text-primary: oklch(94% 0.01 var(--brand-hue));
+  --text-secondary: oklch(70% 0.03 var(--brand-hue));
+  --text-muted: oklch(50% 0.03 var(--brand-hue));
+
 
   /* Typography */
   --font-sans: 'Sora', system-ui, -apple-system, sans-serif;
@@ -40,16 +50,36 @@
 
   /* Radii */
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 0 24px rgba(13, 148, 136, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 64px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 24px oklch(65% 0.2 270 / 0.15);
+}
+
+/* Light Theme Override (if needed, but DESIGN.md mandates Dark as default scene) */
+[data-theme="light"] {
+  --bg: oklch(98% 0.01 170);
+  --bg-secondary: oklch(95% 0.02 170);
+  --bg-elevated: oklch(100% 0 0);
+  --bg-card: oklch(100% 0 0);
+  --bg-card-hover: oklch(97% 0.01 170);
+  
+  --border: oklch(90% 0.02 170);
+  --border-bright: oklch(85% 0.03 170);
+  
+  --text-primary: oklch(25% 0.05 170);
+  --text-secondary: oklch(45% 0.05 170);
+  --text-muted: oklch(65% 0.05 170);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -61,15 +91,17 @@
 body {
   font-family: var(--font-sans);
   background: var(--bg);
-  background-image:
-    radial-gradient(circle at 50% -20%, rgba(13, 148, 136, 0.06), transparent 60%),
-    radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.03), transparent 40%);
+  background-image: 
+    radial-gradient(circle at 50% -10%, oklch(30% 0.1 270 / 0.15), transparent 70%),
+    radial-gradient(circle at 0% 100%, oklch(30% 0.1 170 / 0.05), transparent 50%);
   background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  line-height: 1.6;
 }
+
 
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -123,6 +155,14 @@ input:focus, textarea:focus, select:focus {
   border: 1px solid var(--border-bright);
 }
 
+[data-theme="dark"] .glass {
+  background: rgba(17, 17, 32, 0.85);
+}
+
+[data-theme="dark"] .glass-strong {
+  background: rgba(17, 17, 32, 0.92);
+}
+
 .text-gradient {
   background: linear-gradient(135deg, #0d9488 30%, #14b8a6);
   -webkit-background-clip: text;
@@ -165,6 +205,11 @@ input:focus, textarea:focus, select:focus {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite ease-in-out;
 }
+
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(90deg, #111120 25%, #1a1a30 50%, #111120 75%);
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }

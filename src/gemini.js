@@ -151,7 +151,7 @@ Instructions:
 - Respond ONLY in ${langMap[language] || 'English'}
 - Keep it educational, engaging, and clear
 - Length: 3-4 short paragraphs
-- End with one key takeaway line prefixed with "💡 Key insight:"
+- End with one key takeaway line prefixed with "KEY INSIGHT:"
 - Do NOT add markdown headers`
 
   return callGemini(apiKey, prompt)

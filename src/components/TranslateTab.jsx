@@ -1,5 +1,15 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { 
+  TranslationIcon, 
+  ArrowRight02Icon, 
+  ZapIcon, 
+  Copy01Icon, 
+  Tick01Icon,
+  HelpCircleIcon,
+  RefreshIcon
+} from '@hugeicons/core-free-icons'
 import { translateAndSimplify } from '../gemini'
 
 const LANGUAGES = [
@@ -50,53 +60,67 @@ export default function TranslateTab({ config }) {
   return (
     <div style={s.wrap}>
       <div style={s.headerRow}>
-        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
+        <motion.div initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}>
           <h2 style={s.heading} className="text-gradient">Translate & Simplify</h2>
-          <p style={s.subtext}>Paste any educational text — get it in your language, simplified.</p>
+          <p style={s.subtext}>Paste any educational text to receive a simplified explanation in your preferred language.</p>
         </motion.div>
       </div>
 
       <div style={s.langRow}>
-        <span style={s.langFromLabel}>English / Any</span>
-        <span style={s.arrow}>→</span>
+        <div style={s.langFromBadge}>
+           <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>SOURCE</span>
+           <span style={{ fontWeight: 700 }}>Any Language</span>
+        </div>
+        <div style={{ color: 'var(--text-muted)', opacity: 0.5 }}>
+           <HugeiconsIcon icon={ArrowRight02Icon} size={20} />
+        </div>
         <div style={s.langBtnGroup}>
           {LANGUAGES.map(l => (
             <motion.button
               key={l.code}
-              whileHover={{ y: -2 }}
+              whileHover={{ y: -2, background: 'var(--bg-card-hover)' }}
               whileTap={{ scale: 0.97 }}
               style={{ ...s.langBtn, ...(targetLang === l.code ? s.langBtnActive : {}) }}
               onClick={() => setLang(l.code)}
             >
-              <span style={{ fontSize: 14, fontWeight: 600 }}>{l.native}</span>
+              <span style={{ fontSize: 14, fontWeight: 700 }}>{l.native}</span>
+              <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.6, textTransform: 'uppercase' }}>{l.label}</span>
             </motion.button>
           ))}
         </div>
       </div>
 
       <div style={s.samplesRow}>
-        <span style={s.sampleLabel}>SAMPLES:</span>
-        {SAMPLE_TEXTS.map((t, i) => (
-          <motion.button
-            key={i}
-            whileHover={{ scale: 1.05, borderColor: 'var(--teal)' }}
-            style={s.sampleBtn}
-            onClick={() => setInput(t)}
-          >
-            Sample {i + 1}
-          </motion.button>
-        ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)' }}>
+           <HugeiconsIcon icon={ZapIcon} size={14} />
+           <span style={s.sampleLabel}>QUICK SAMPLES:</span>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {SAMPLE_TEXTS.map((t, i) => (
+            <motion.button
+              key={i}
+              whileHover={{ scale: 1.05, borderColor: 'var(--teal)', background: 'var(--teal-muted)' }}
+              style={s.sampleBtn}
+              onClick={() => setInput(t)}
+            >
+              Sample {i + 1}
+            </motion.button>
+          ))}
+        </div>
       </div>
 
       <div style={s.ioLayout}>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={s.panel}>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} style={s.panel}>
           <div style={s.panelHeader}>
-            <span>Input</span>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700 }}>{input.length} CHARS</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+               <HugeiconsIcon icon={TranslationIcon} size={14} style={{ color: 'var(--purple)' }} />
+               <span>Input Stream</span>
+            </div>
+            <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>{input.length} CHARS</span>
           </div>
           <textarea
             style={s.textarea}
-            placeholder="Paste educational content here \u2014 a textbook paragraph, lecture notes, definition..."
+            placeholder="Paste educational content here: textbook paragraphs, lecture notes, or complex definitions..."
             value={input}
             onChange={e => setInput(e.target.value)}
           />
@@ -104,25 +128,31 @@ export default function TranslateTab({ config }) {
 
         <div style={s.middleCol}>
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: 'var(--shadow-glow)' }}
+            whileHover={{ scale: 1.05, y: -2, boxShadow: '0 8px 32px oklch(75% 0.15 170 / 0.25)' }}
             whileTap={{ scale: 0.95 }}
-            style={{ ...s.translateBtn, opacity: loading || !input.trim() ? 0.55 : 1 }}
+            style={{ ...s.translateBtn, opacity: loading || !input.trim() ? 0.5 : 1 }}
             onClick={handleTranslate}
             disabled={loading || !input.trim()}
           >
             {loading ? (
-              <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} style={{ width: 20, height: 20, border: '3px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block' }} />
+              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }} style={{ width: 24, height: 24, border: '3px solid rgba(255,255,255,0.2)', borderTopColor: '#fff', borderRadius: '50%' }} />
             ) : (
-              <span style={{ lineHeight: 1.5, textAlign: 'center' }}>Translate<br />& Simplify</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                <HugeiconsIcon icon={RefreshIcon} size={24} />
+                <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Process</span>
+              </div>
             )}
           </motion.button>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} style={s.panel} className="card-shine">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={s.panel} className="card-shine">
           <div style={s.panelHeader}>
-            <span style={{ color: 'var(--teal)', fontWeight: 800 }}>
-              {LANGUAGES.find(l => l.code === targetLang)?.native}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+               <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--teal)' }} />
+               <span style={{ color: 'var(--teal)', fontWeight: 800 }}>
+                 {LANGUAGES.find(l => l.code === targetLang)?.native} Output
+               </span>
+            </div>
             <AnimatePresence>
               {output && (
                 <motion.button
@@ -132,7 +162,8 @@ export default function TranslateTab({ config }) {
                   style={s.copyBtn}
                   onClick={handleCopy}
                 >
-                  {copiedDone ? 'Copied' : 'Copy'}
+                  <HugeiconsIcon icon={copiedDone ? Tick01Icon : Copy01Icon} size={14} />
+                  <span>{copiedDone ? 'Copied' : 'Copy Result'}</span>
                 </motion.button>
               )}
             </AnimatePresence>
@@ -145,10 +176,10 @@ export default function TranslateTab({ config }) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: 12 }}
+                  style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: 16 }}
                 >
-                  {[90, 75, 85, 60, 80].map((w, i) => (
-                    <div key={i} className="skeleton" style={{ height: 18, width: `${w}%`, borderRadius: 4 }} />
+                  {[90, 75, 85, 60, 80, 70, 95].map((w, i) => (
+                    <div key={i} className="skeleton" style={{ height: 20, width: `${w}%`, borderRadius: 6 }} />
                   ))}
                 </motion.div>
               ) : output ? (
@@ -167,7 +198,8 @@ export default function TranslateTab({ config }) {
                   animate={{ opacity: 1 }}
                   style={s.outputPlaceholder}
                 >
-                  Simplified translation will appear here
+                  <HugeiconsIcon icon={TranslationIcon} size={32} style={{ opacity: 0.2, marginBottom: 16 }} />
+                  <span>Simplified intelligence will appear here</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -180,14 +212,18 @@ export default function TranslateTab({ config }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.4 }}
         style={s.infoCard}
+        className="glass"
       >
-        <p style={s.infoTitle}>Why this matters</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+           <HugeiconsIcon icon={HelpCircleIcon} size={20} style={{ color: 'var(--teal)' }} />
+           <p style={s.infoTitle}>Strategic Objective</p>
+        </div>
         <p style={s.infoText}>
-          Over 60% of Indian students learn in a language different from their mother tongue.
-          VidyaAI bridges this gap by making any educational content accessible in Telugu, Hindi, and Tamil —
-          not just translated, but simplified for rural and first-generation learners.
+          Over 60% of regional Indian students struggle with English-medium curricula. 
+          VidyaAI democratizes access by providing instant, high-fidelity simplification in native languages, 
+          ensuring first-generation learners are never blocked by language barriers.
         </p>
       </motion.div>
     </div>
@@ -195,80 +231,83 @@ export default function TranslateTab({ config }) {
 }
 
 const s = {
-  wrap: { paddingBottom: '2rem' },
-  headerRow: { marginBottom: '2rem' },
-  heading: { fontSize: 24, fontWeight: 800, marginBottom: 6 },
-  subtext: { fontSize: 15, color: 'var(--text-secondary)' },
-  langRow: { display: 'flex', alignItems: 'center', gap: 16, marginBottom: '1.5rem', flexWrap: 'wrap' },
-  langFromLabel: {
+  wrap: { paddingBottom: '3rem' },
+  headerRow: { marginBottom: '2.5rem' },
+  heading: { fontSize: 32, fontWeight: 800, marginBottom: 8, letterSpacing: '-0.02em' },
+  subtext: { fontSize: 17, color: 'var(--text-secondary)', fontWeight: 500 },
+  langRow: { display: 'flex', alignItems: 'center', gap: 20, marginBottom: '2rem', flexWrap: 'wrap' },
+  langFromBadge: {
+    display: 'flex', flexDirection: 'column', gap: 4,
     background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-md)', padding: '10px 18px', fontSize: 14, color: 'var(--text-secondary)', fontWeight: 600,
+    borderRadius: 'var(--radius-md)', padding: '10px 20px', fontSize: 15, color: 'var(--text-primary)',
   },
-  arrow: { fontSize: 20, color: 'var(--text-muted)' },
-  langBtnGroup: { display: 'flex', gap: 8, flexWrap: 'wrap' },
+  langBtnGroup: { display: 'flex', gap: 10, flexWrap: 'wrap' },
   langBtn: {
     background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-md)', padding: '10px 18px', cursor: 'pointer', transition: 'all 0.2s',
-    fontSize: 14, color: 'var(--text-secondary)',
+    borderRadius: 'var(--radius-md)', padding: '8px 16px', cursor: 'pointer', transition: 'all 0.2s',
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+    color: 'var(--text-secondary)',
   },
   langBtnActive: {
-    borderColor: 'var(--teal)', background: 'var(--teal-muted)',
-    color: 'var(--teal)', fontWeight: 700,
+    borderColor: 'var(--teal)', background: 'oklch(75% 0.15 170 / 0.1)',
+    color: 'var(--teal-bright)', boxShadow: '0 0 0 1px var(--teal)',
   },
-  samplesRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1.5rem', flexWrap: 'wrap' },
-  sampleLabel: { fontSize: 11, color: 'var(--text-muted)', fontWeight: 800, letterSpacing: '0.1em' },
+  samplesRow: { display: 'flex', alignItems: 'center', gap: 16, marginBottom: '2rem', flexWrap: 'wrap' },
+  sampleLabel: { fontSize: 10, color: 'var(--text-muted)', fontWeight: 800, letterSpacing: '0.12em', fontFamily: 'var(--font-mono)' },
   sampleBtn: {
-    background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-    borderRadius: 8, padding: '6px 14px', fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600,
+    background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+    borderRadius: 10, padding: '8px 16px', fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600,
+    transition: 'all 0.2s',
   },
-  ioLayout: { display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 16, marginBottom: '2rem', alignItems: 'stretch' },
+  ioLayout: { display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 20, marginBottom: '3rem', alignItems: 'stretch' },
   panel: {
     background: 'var(--bg-card)', border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', minHeight: 280,
+    borderRadius: 'var(--radius-xl)', display: 'flex', flexDirection: 'column', minHeight: 320,
     boxShadow: 'var(--shadow-md)',
   },
   panelHeader: {
-    padding: '12px 20px', borderBottom: '1px solid var(--border)',
+    padding: '16px 24px', borderBottom: '1px solid var(--border)',
     fontSize: 11, fontWeight: 800, color: 'var(--text-muted)',
-    textTransform: 'uppercase', letterSpacing: '0.1em',
+    textTransform: 'uppercase', letterSpacing: '0.12em',
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    background: 'rgba(255,255,255,0.02)',
+    background: 'oklch(100% 0 0 / 0.02)',
   },
   textarea: {
     flex: 1, background: 'transparent', border: 'none',
-    padding: '1.25rem', fontSize: 15, color: 'var(--text-primary)',
-    resize: 'none', outline: 'none', lineHeight: 1.7, minHeight: 200,
+    padding: '1.5rem', fontSize: 16, color: 'var(--text-primary)',
+    resize: 'none', outline: 'none', lineHeight: 1.7, minHeight: 240,
+    fontFamily: 'inherit',
   },
   middleCol: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
   translateBtn: {
-    background: 'var(--teal)', border: 'none', borderRadius: 'var(--radius-md)',
-    padding: '16px', color: '#fff', fontSize: 14, fontWeight: 700,
-    lineHeight: 1.5, textAlign: 'center', cursor: 'pointer',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    minWidth: 100, minHeight: 100, boxShadow: 'var(--shadow-md)',
+    background: 'var(--teal)', border: 'none', borderRadius: 'var(--radius-lg)',
+    padding: '20px', color: '#fff', fontSize: 14, fontWeight: 800,
+    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: 100, height: 100, boxShadow: '0 12px 32px oklch(75% 0.15 170 / 0.2)',
   },
   outputText: {
-    flex: 1, padding: '1.25rem', fontSize: 16, color: 'var(--text-primary)',
+    flex: 1, padding: '1.75rem', fontSize: 17, color: 'var(--text-primary)',
     lineHeight: 1.8, whiteSpace: 'pre-wrap',
   },
   outputPlaceholder: {
-    flex: 1, padding: '1.25rem', fontSize: 14, color: 'var(--text-muted)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontStyle: 'italic',
+    flex: 1, padding: '1.75rem', fontSize: 15, color: 'var(--text-muted)',
+    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+    fontWeight: 500, opacity: 0.8,
   },
   copyBtn: {
     background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-    borderRadius: 8, padding: '4px 12px', fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600,
+    borderRadius: 8, padding: '6px 14px', fontSize: 12, color: 'var(--text-primary)', fontWeight: 700,
+    display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.2s',
   },
   errorBox: {
-    background: 'var(--coral-muted)', border: '1px solid rgba(239,68,68,0.25)',
-    borderRadius: 'var(--radius-md)', padding: '14px 20px', fontSize: 14, color: 'var(--coral)',
-    marginBottom: '1rem',
+    background: 'var(--coral-muted)', border: '1px solid var(--coral)',
+    borderRadius: 'var(--radius-md)', padding: '16px 24px', fontSize: 14, color: 'var(--coral-bright)',
+    marginBottom: '1.5rem', fontWeight: 600,
   },
   infoCard: {
-    background: 'var(--teal-muted)', border: '1px solid var(--border-accent)',
-    borderRadius: 'var(--radius-md)', padding: '1.5rem 2rem',
+    background: 'oklch(20% 0.04 var(--brand-hue) / 0.4)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-xl)', padding: '2rem 2.5rem',
   },
-  infoTitle: { fontSize: 15, fontWeight: 800, color: 'var(--teal-bright)', marginBottom: 8 },
-  infoText: { fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.75 },
+  infoTitle: { fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.01em' },
+  infoText: { fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.7, marginTop: 4, fontWeight: 500 },
 }

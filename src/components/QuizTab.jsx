@@ -95,7 +95,7 @@ export default function QuizTab({ config, roadmap, learnedTopics, onAnswer }) {
              onChange={e => setTopic(e.target.value)}
            >
              <option value="" disabled>Select a topic from your roadmap</option>
-             {roadmap?.nodes.map(node => (
+             {roadmap?.nodes?.map(node => (
                <option key={node.id} value={node.label}>
                  {node.label} {learnedTopics.includes(node.label) ? ' \u2014 learned' : ''}
                </option>

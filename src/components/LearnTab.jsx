@@ -4,10 +4,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { 
   ArrowLeft02Icon, 
   Search01Icon, 
-  ZapIcon, 
   BookOpen01Icon,
   SparklesIcon,
-  CircleIcon,
   RefreshIcon
 } from '@hugeicons/core-free-icons'
 import { explainTopic, getSuggestedTopics } from '../gemini'
@@ -62,7 +60,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
     try {
       const topics = await getSuggestedTopics({ apiKey: config.apiKey, subject: config.subject })
       setChips(topics)
-    } catch { setChips([]) }
+    } catch (err) { setChips([]); console.warn(err) }
     setChipsLoading(false)
   }
 
@@ -120,7 +118,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
 
             <div style={s.searchWrap}>
               <div style={{ position: 'relative' }}>
-                <Search01Icon size={18} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <HugeiconsIcon icon={Search01Icon} size={18} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 <input
                   style={s.searchInput}
                   placeholder={`Deep dive into any topic...`}
@@ -148,7 +146,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
               animate="show"
               style={s.roadmapGrid}
             >
-              {roadmap?.nodes.map((node, i) => {
+              {roadmap?.nodes?.map((node, i) => {
                 const status = nodeStatuses[node.label]
                 const statusColor = status === 'strong' ? 'var(--teal)' : status === 'medium' ? 'var(--amber)' : status === 'weak' ? 'var(--coral)' : 'var(--border)'
                 return (
@@ -219,7 +217,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
                 </div>
               </div>
               <button style={s.backBtn} onClick={() => setContent('')}>
-                <ArrowLeft02Icon size={16} />
+                <HugeiconsIcon icon={ArrowLeft02Icon} size={16} />
                 Back to Roadmap
               </button>
             </div>
@@ -239,7 +237,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
                 <div style={s.contentHeader}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{ padding: 10, background: 'var(--teal-muted)', borderRadius: 10, color: 'var(--teal)' }}>
-                      <BookOpen01Icon size={20} />
+                      <HugeiconsIcon icon={BookOpen01Icon} size={20} />
                     </div>
                     <h3 style={s.topicTag}>{currentTopic}</h3>
                   </div>
@@ -262,7 +260,7 @@ export default function LearnTab({ config, roadmap, quizHistory, onTopicLearned 
                           key={i}
                           style={s.keyInsight}
                         >
-                          <SparklesIcon size={20} style={{ flexShrink: 0 }} />
+                          <HugeiconsIcon icon={SparklesIcon} size={20} style={{ flexShrink: 0 }} />
                           <div>{line.replace('💡', '').replace('KEY INSIGHT:', '').trim()}</div>
                         </motion.div>
                       )
@@ -298,7 +296,8 @@ const s = {
   roadmapOverview: { fontSize: 18, color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: 750 },
   roadmapGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20, marginBottom: '3rem' },
   nodeCard: {
-    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    background: 'var(--bg-card)',
+    borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)',
     borderRadius: 'var(--radius-xl)', padding: '2rem',
     display: 'flex', gap: 20, alignItems: 'flex-start',
     textAlign: 'left', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
@@ -371,7 +370,8 @@ const s = {
     lineHeight: 1.6,
   },
   reloadBtn: {
-    background: 'transparent', border: '1px solid var(--border)',
+    background: 'transparent',
+    borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)',
     borderRadius: 'var(--radius-md)', padding: '12px 24px', fontSize: 14, color: 'var(--text-secondary)',
     transition: 'all 0.2s', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10,
   },

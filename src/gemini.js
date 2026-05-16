@@ -94,6 +94,37 @@ async function callGemini(apiKey, prompt, systemInstruction = '', model = DEFAUL
   }
 }
 
+function safeParseJSON(raw, label = '') {
+  try {
+    return JSON.parse(raw)
+  } catch (err) {
+    // Try to salvage by locating the first JSON bracket and last matching bracket
+    const firstObj = raw.indexOf('{')
+    const firstArr = raw.indexOf('[')
+    let start = -1
+    let end = -1
+    if (firstObj !== -1 && (firstObj < firstArr || firstArr === -1)) {
+      start = firstObj
+      end = raw.lastIndexOf('}')
+    } else if (firstArr !== -1) {
+      start = firstArr
+      end = raw.lastIndexOf(']')
+    }
+
+    if (start !== -1 && end !== -1 && end > start) {
+      const candidate = raw.slice(start, end + 1)
+      try {
+        return JSON.parse(candidate)
+      } catch (err2) {
+        // fallthrough to throwing original error below
+      }
+    }
+
+    const preview = raw.slice(0, 600).replace(/\n/g, ' ')
+    throw new Error(`Invalid JSON from Gemini${label ? ' (' + label + ')' : ''}: ${err.message}. Response preview: ${preview}`)
+  }
+}
+
 // FEATURE 0: Generate Roadmap from context
 export async function generateRoadmap({ apiKey, context, language }) {
   const langMap = {
@@ -123,7 +154,7 @@ Ensure there are between 5 to 8 sequential nodes that logically cover the contex
 
   const raw = await callGemini(apiKey, prompt)
   const cleaned = raw.replace(/```json|```/g, '').trim()
-  return JSON.parse(cleaned)
+  return safeParseJSON(cleaned, 'generateRoadmap')
 }
 
 // FEATURE 1: Adaptive explanation - adjusts style + language
@@ -182,7 +213,7 @@ Return ONLY valid JSON in this exact format, nothing else:
 
   const raw = await callGemini(apiKey, prompt)
   const cleaned = raw.replace(/```json|```/g, '').trim()
-  return JSON.parse(cleaned)
+  return safeParseJSON(cleaned, 'generateQuizQuestion')
 }
 
 // FEATURE 3: Language translation + simplification
@@ -239,5 +270,5 @@ Return ONLY a JSON array of strings, no explanation:
 
   const raw = await callGemini(apiKey, prompt)
   const cleaned = raw.replace(/```json|```/g, '').trim()
-  return JSON.parse(cleaned)
+  return safeParseJSON(cleaned, 'getSuggestedTopics')
 }

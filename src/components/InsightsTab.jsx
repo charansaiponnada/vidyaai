@@ -10,7 +10,8 @@ import {
   Tick01Icon,
   BookOpen01Icon,
   Target02Icon,
-  Idea01Icon
+  Idea01Icon,
+  AiBrain01Icon
 } from '@hugeicons/core-free-icons'
 import { detectLearningInsight } from '../gemini'
 

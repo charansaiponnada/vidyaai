@@ -253,7 +253,8 @@ const styles = {
   hint: { fontSize: 12, color: 'var(--text-muted)', marginTop: 8, fontWeight: 500 },
   langGrid: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 },
   langBtn: {
-    background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+    background: 'var(--bg-secondary)',
+    borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)',
     borderRadius: 'var(--radius-md)', padding: '16px 8px',
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
     cursor: 'pointer', transition: 'all 0.2s cubic-bezier(0.23, 1, 0.32, 1)',

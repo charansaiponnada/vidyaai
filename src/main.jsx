@@ -1,27 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import App from './App.jsx'
 import LandingPage from './components/landing-page'
 import { LoginPage } from './components/ui/animated-characters-login-page'
 import './index.css'
 
-function Root() {
-  const [page, setPage] = useState('landing')
+function LandingWrapper() {
+  const navigate = useNavigate()
+  return <LandingPage onGetStarted={() => navigate('/login')} />
+}
 
-  switch (page) {
-    case 'landing':
-      return <LandingPage onGetStarted={() => setPage('login')} />
-    case 'login':
-      return <LoginPage onLogin={() => setPage('app')} />
-    case 'app':
-      return <App />
-    default:
-      return <LandingPage onGetStarted={() => setPage('login')} />
-  }
+function LoginWrapper() {
+  const navigate = useNavigate()
+  return <LoginPage onLogin={() => navigate('/app')} />
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Root />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingWrapper />} />
+        <Route path="/login" element={<LoginWrapper />} />
+        <Route path="/app" element={<App />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
 )

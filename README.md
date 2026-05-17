@@ -46,7 +46,7 @@ VidyaAI gives every student a personal AI tutor that speaks their language and a
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/vidyaai.git
+git clone https://github.com/charansaiponnada/vidyaai.git
 cd vidyaai
 
 # 2. Install dependencies
